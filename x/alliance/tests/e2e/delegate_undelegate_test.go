@@ -174,7 +174,7 @@ func TestDelegatingASmallAmount(t *testing.T) {
 	require.NoError(t, err)
 
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 
 	_, err = app.AllianceKeeper.DeductAssetsHook(ctx, assets)
@@ -286,7 +286,7 @@ func TestDelegateAndUndelegateWithSmallAmounts(t *testing.T) {
 	require.NoError(t, err)
 
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 
 	ctx = ctx.WithBlockTime(startTime.Add(time.Minute * 6)).WithBlockHeight(2)
@@ -353,7 +353,7 @@ func TestUnDelegatingSlightlyMoreCoin(t *testing.T) {
 	require.NoError(t, err)
 
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 
 	ctx = ctx.WithBlockTime(startTime.Add(time.Minute * 6)).WithBlockHeight(2)
@@ -418,7 +418,7 @@ func TestReDelegatingSlightlyMoreCoin(t *testing.T) {
 	require.NoError(t, err)
 
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 
 	ctx = ctx.WithBlockTime(startTime.Add(time.Minute * 6)).WithBlockHeight(2)
@@ -479,7 +479,7 @@ func TestDustValidatorSharesAfterUndelegationError(t *testing.T) {
 
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
 
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 
 	require.NoError(t, err)
 
@@ -501,7 +501,7 @@ func TestDustValidatorSharesAfterUndelegationError(t *testing.T) {
 
 	assets = app.AllianceKeeper.GetAllAssets(ctx)
 
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 
 	require.NoError(t, err)
 
@@ -548,7 +548,7 @@ func TestDustValidatorSharesAfterRedelegationError(t *testing.T) {
 
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
 
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 
 	require.NoError(t, err)
 
@@ -570,7 +570,7 @@ func TestDustValidatorSharesAfterRedelegationError(t *testing.T) {
 
 	assets = app.AllianceKeeper.GetAllAssets(ctx)
 
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 
 	require.NoError(t, err)
 

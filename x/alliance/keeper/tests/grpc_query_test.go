@@ -301,7 +301,7 @@ func TestClaimQueryReward(t *testing.T) {
 	require.Nil(t, delErr)
 	require.Equal(t, sdk.NewDec(1000000000), *delRes)
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
-	err := app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err := app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 
 	// ...and advance block...

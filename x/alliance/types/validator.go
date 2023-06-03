@@ -16,6 +16,7 @@ func NewAllianceValidatorInfo() AllianceValidatorInfo {
 		GlobalRewardHistory:  RewardHistories{},
 		TotalDelegatorShares: sdk.NewDecCoins(),
 		ValidatorShares:      sdk.NewDecCoins(),
+		VotingPower:          0,
 	}
 }
 

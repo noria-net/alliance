@@ -5,6 +5,7 @@ import (
 	"math"
 	"time"
 
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -88,18 +89,21 @@ func (k Keeper) UpdateAllianceAsset(ctx sdk.Context, newAsset types.AllianceAsse
 	return nil
 }
 
-func (k Keeper) RebalanceHook(ctx sdk.Context, assets []*types.AllianceAsset) error {
+func (k Keeper) RebalanceHook(ctx sdk.Context, assets []*types.AllianceAsset) ([]abci.ValidatorUpdate, error) {
 	if k.ConsumeAssetRebalanceEvent(ctx) {
 		return k.RebalanceBondTokenWeights(ctx, assets)
 	}
-	return nil
+	return nil, nil
 }
 
 // RebalanceBondTokenWeights uses asset reward weights to calculate the expected amount of staking token that has to be
 // minted / burned to maintain the right ratio
 // It iterates all validators and calculates the expected staked amount based on delegations and delegates/undelegates
 // the difference.
-func (k Keeper) RebalanceBondTokenWeights(ctx sdk.Context, assets []*types.AllianceAsset) (err error) {
+func (k Keeper) RebalanceBondTokenWeights(ctx sdk.Context, assets []*types.AllianceAsset) (updates []abci.ValidatorUpdate, err error) {
+	fmt.Printf("\n############### Rebalancing bond token weights\n")
+	updates = []abci.ValidatorUpdate{}
+	powerReduction := sdk.NewDec(k.stakingKeeper.PowerReduction(ctx).Int64())
 	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
 	allianceBondAmount := k.GetAllianceBondedAmount(ctx, moduleAddr)
 
@@ -125,7 +129,7 @@ func (k Keeper) RebalanceBondTokenWeights(ctx sdk.Context, assets []*types.Allia
 		return false
 	})
 	if err != nil {
-		return err
+		return updates, err
 	}
 
 	for _, validator := range bondedValidators {
@@ -136,6 +140,8 @@ func (k Keeper) RebalanceBondTokenWeights(ctx sdk.Context, assets []*types.Allia
 		}
 
 		expectedBondAmount := sdk.ZeroDec()
+		nativeBondAmountForValidator := sdk.NewDec(validator.Validator.Tokens.Int64()).Sub(currentBondedAmount)
+		expectedPower := (nativeBondAmountForValidator.Quo(powerReduction))
 		for _, asset := range assets {
 			// Ignores assets that were recently added to prevent a small set of stakers from owning too much of the
 			// voting power at the start. Uses the asset.RewardStartTime to determine when an asset is activated
@@ -146,11 +152,27 @@ func (k Keeper) RebalanceBondTokenWeights(ctx sdk.Context, assets []*types.Allia
 			}
 			valShares := validator.ValidatorSharesWithDenom(asset.Denom)
 			expectedBondAmountForAsset := asset.RewardWeight.MulInt(nativeBondAmount)
+			// expectedPowerForAsset := asset.ConsensusWeight.MulInt(nativeBondAmount)
 
 			bondedValidatorShares := asset.TotalValidatorShares.Sub(unbondedValidatorShares.AmountOf(asset.Denom))
+			fmt.Printf("\n########## Asset %s bonded validator shares %s\n", asset.Denom, bondedValidatorShares)
 			if valShares.IsPositive() && bondedValidatorShares.IsPositive() {
 				expectedBondAmount = expectedBondAmount.Add(valShares.Quo(bondedValidatorShares).Mul(expectedBondAmountForAsset))
 			}
+			// newValPowerForAsset := valShares.Quo(bondedValidatorShares).Mul(expectedPowerForAsset).Quo(powerReduction)
+			newValPowerForAsset := bondedValidatorShares.Mul(asset.ConsensusWeight).Quo(powerReduction)
+			expectedPower = expectedPower.Add(newValPowerForAsset)
+		}
+		newVotingPower := expectedPower.TruncateInt64()
+		if newVotingPower != (validator.VotingPower) {
+			fmt.Printf("\n########## Validator %s voting power changed from %d to %d\n", validator.GetOperator(), validator.VotingPower, newVotingPower)
+			pubKey, _ := validator.TmConsPublicKey()
+			updates = append(updates, abci.ValidatorUpdate{
+				PubKey: pubKey,
+				Power:  newVotingPower,
+			})
+			validator.VotingPower = newVotingPower
+			k.SetValidatorInfo(ctx, validator.GetOperator(), *validator.AllianceValidatorInfo)
 		}
 		if expectedBondAmount.GT(currentBondedAmount) {
 			// delegate more tokens to increase the weight
@@ -163,16 +185,17 @@ func (k Keeper) RebalanceBondTokenWeights(ctx sdk.Context, assets []*types.Allia
 			}
 			err = k.bankKeeper.MintCoins(ctx, types.ModuleName, sdk.NewCoins(sdk.NewCoin(bondDenom, bondAmount)))
 			if err != nil {
-				return err
+				return updates, err
 			}
 			_, err = k.ClaimValidatorRewards(ctx, validator)
 			if err != nil {
-				return err
+				return updates, err
 			}
 			_, err = k.stakingKeeper.Delegate(ctx, moduleAddr, bondAmount, stakingtypes.Unbonded, *validator.Validator, true)
 			if err != nil {
-				return err
+				return updates, err
 			}
+			fmt.Printf("\n############## rebalanced up %s\n", bondAmount)
 		} else if expectedBondAmount.LT(currentBondedAmount) {
 			// undelegate more tokens to reduce the weight
 			unbondAmount := currentBondedAmount.Sub(expectedBondAmount).TruncateInt()
@@ -182,23 +205,24 @@ func (k Keeper) RebalanceBondTokenWeights(ctx sdk.Context, assets []*types.Allia
 			}
 			sharesToUnbond, err := k.stakingKeeper.ValidateUnbondAmount(ctx, moduleAddr, validator.GetOperator(), unbondAmount)
 			if err != nil {
-				return err
+				return updates, err
 			}
 			_, err = k.ClaimValidatorRewards(ctx, validator)
 			if err != nil {
-				return err
+				return updates, err
 			}
 			tokensToBurn, err := k.stakingKeeper.Unbond(ctx, moduleAddr, validator.GetOperator(), sharesToUnbond)
 			if err != nil {
-				return err
+				return updates, err
 			}
 			err = k.bankKeeper.BurnCoins(ctx, stakingtypes.BondedPoolName, sdk.NewCoins(sdk.NewCoin(bondDenom, tokensToBurn)))
 			if err != nil {
-				return err
+				return updates, err
 			}
+			fmt.Printf("\n############## rebalanced down %s\n", tokensToBurn)
 		}
 	}
-	return nil
+	return updates, nil
 }
 
 // SetAsset Does not check if the asset already exists and overwrites it

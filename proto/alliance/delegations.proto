@@ -73,4 +73,6 @@ message AllianceValidatorInfo {
   repeated cosmos.base.v1beta1.DecCoin validator_shares = 3 [
     (gogoproto.nullable)   = false
   ];
+
+  int64 voting_power = 4;
 }

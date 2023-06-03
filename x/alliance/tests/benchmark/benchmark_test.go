@@ -101,7 +101,7 @@ func TestRunBenchmarks(t *testing.T) {
 		if err != nil {
 			panic(err)
 		}
-		err = app.AllianceKeeper.RebalanceHook(ctx, assets)
+		_, err = app.AllianceKeeper.RebalanceHook(ctx, assets)
 		if err != nil {
 			panic(err)
 		}

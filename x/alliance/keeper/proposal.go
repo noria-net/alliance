@@ -22,6 +22,7 @@ func (k Keeper) CreateAlliance(ctx context.Context, req *types.MsgCreateAlliance
 	asset := types.AllianceAsset{
 		Denom:                req.Denom,
 		RewardWeight:         req.RewardWeight,
+		ConsensusWeight:      req.ConsensusWeight,
 		RewardWeightRange:    req.RewardWeightRange,
 		TakeRate:             req.TakeRate,
 		TotalTokens:          sdk.ZeroInt(),
@@ -46,6 +47,7 @@ func (k Keeper) UpdateAlliance(ctx context.Context, req *types.MsgUpdateAlliance
 		return types.ErrRewardWeightOutOfBound
 	}
 	asset.RewardWeight = req.RewardWeight
+	asset.ConsensusWeight = req.ConsensusWeight
 	asset.TakeRate = req.TakeRate
 	asset.RewardChangeRate = req.RewardChangeRate
 	asset.RewardChangeInterval = req.RewardChangeInterval

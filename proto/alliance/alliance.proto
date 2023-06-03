@@ -71,6 +71,11 @@ message AllianceAsset {
   RewardWeightRange reward_weight_range = 10 [(gogoproto.nullable) = false];
   // flag to check if an asset has completed the initialization process after the reward delay
   bool is_initialized = 11;
+
+  string consensus_weight = 12 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ];
 }
 
 message RewardWeightChangeSnapshot {
