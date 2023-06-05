@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/terra-money/alliance/x/alliance/keeper"
-	"github.com/terra-money/alliance/x/alliance/types"
+	"github.com/noria-net/alliance/x/alliance/keeper"
+	"github.com/noria-net/alliance/x/alliance/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -26,6 +26,7 @@ func TestCreateAlliance(t *testing.T) {
 		Description:       "",
 		Denom:             "uluna",
 		RewardWeight:      sdk.OneDec(),
+		ConsensusWeight:   sdk.OneDec(),
 		RewardWeightRange: types.RewardWeightRange{Min: sdk.NewDec(0), Max: sdk.NewDec(5)},
 		TakeRate:          sdk.OneDec(),
 	})
@@ -39,6 +40,7 @@ func TestCreateAlliance(t *testing.T) {
 			{
 				Denom:                "uluna",
 				RewardWeight:         sdk.NewDec(1),
+				ConsensusWeight:      sdk.NewDec(1),
 				RewardWeightRange:    types.RewardWeightRange{Min: sdk.NewDec(0), Max: sdk.NewDec(5)},
 				TakeRate:             sdk.NewDec(1),
 				TotalTokens:          sdk.ZeroInt(),
@@ -64,7 +66,7 @@ func TestCreateAllianceFailWithDuplicatedDenom(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset("uluna", sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(2), sdk.NewDec(0), startTime),
+			types.NewAllianceAsset("uluna", sdk.NewDec(1), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(2), sdk.NewDec(0), startTime),
 		},
 	})
 
@@ -92,6 +94,7 @@ func TestUpdateAlliance(t *testing.T) {
 			{
 				Denom:                "uluna",
 				RewardWeight:         sdk.NewDec(2),
+				ConsensusWeight:      sdk.NewDec(1),
 				RewardWeightRange:    types.RewardWeightRange{Min: sdk.NewDec(0), Max: sdk.NewDec(10)},
 				TakeRate:             sdk.OneDec(),
 				TotalTokens:          sdk.ZeroInt(),
@@ -107,6 +110,7 @@ func TestUpdateAlliance(t *testing.T) {
 		Description:          "",
 		Denom:                "uluna",
 		RewardWeight:         sdk.NewDec(6),
+		ConsensusWeight:      sdk.NewDec(2),
 		TakeRate:             sdk.NewDec(7),
 		RewardChangeInterval: 0,
 		RewardChangeRate:     sdk.ZeroDec(),
@@ -121,6 +125,7 @@ func TestUpdateAlliance(t *testing.T) {
 			{
 				Denom:                "uluna",
 				RewardWeight:         sdk.NewDec(6),
+				ConsensusWeight:      sdk.NewDec(2),
 				RewardWeightRange:    types.RewardWeightRange{Min: sdk.NewDec(0), Max: sdk.NewDec(10)},
 				TakeRate:             sdk.NewDec(7),
 				TotalTokens:          sdk.ZeroInt(),

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/terra-money/alliance/x/alliance/keeper"
-	"github.com/terra-money/alliance/x/alliance/types"
+	"github.com/noria-net/alliance/x/alliance/keeper"
+	"github.com/noria-net/alliance/x/alliance/types"
 
 	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/telemetry"
@@ -43,16 +43,16 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) []abci.ValidatorUpdate {
 	}
 
 	if len(valUpdates) > 0 && len(newUpdates) == 0 && len(assets) > 0 {
-		fmt.Printf("\n########### Already processed changes in previous block\n")
+		// fmt.Printf("\n########### Already processed changes in previous block\n")
 		return []abci.ValidatorUpdate{}
 	}
 
-	fmt.Printf("\n########### Native Voting Power Changes: %v\n", valUpdates)
-	fmt.Printf("\n########### Weighted Voting Power Changes: %v\n", newUpdates)
+	// fmt.Printf("\n########### Native Voting Power Changes: %v\n", valUpdates)
+	// fmt.Printf("\n########### Weighted Voting Power Changes: %v\n", newUpdates)
 
 	// merge validator updates
 	mergedUpdates := mergeValidatorUpdates(valUpdates, newUpdates)
-	fmt.Printf("\n########### Merged Validator Updates: %v\n\n", mergedUpdates)
+	// fmt.Printf("\n########### Merged Validator Updates: %v\n\n", mergedUpdates)
 
 	return mergedUpdates
 }

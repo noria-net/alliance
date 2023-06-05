@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/terra-money/alliance/x/alliance/tests/benchmark"
+	"github.com/noria-net/alliance/x/alliance/tests/benchmark"
 
 	abcitypes "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -14,9 +14,9 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/stretchr/testify/require"
 
-	test_helpers "github.com/terra-money/alliance/app"
-	"github.com/terra-money/alliance/x/alliance"
-	"github.com/terra-money/alliance/x/alliance/types"
+	test_helpers "github.com/noria-net/alliance/app"
+	"github.com/noria-net/alliance/x/alliance"
+	"github.com/noria-net/alliance/x/alliance/types"
 )
 
 var (

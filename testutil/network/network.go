@@ -18,9 +18,9 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/terra-money/alliance/app/params"
+	"github.com/noria-net/alliance/app/params"
 
-	"github.com/terra-money/alliance/app"
+	"github.com/noria-net/alliance/app"
 )
 
 type (

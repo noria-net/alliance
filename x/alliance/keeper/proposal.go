@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/terra-money/alliance/x/alliance/types"
+	"github.com/noria-net/alliance/x/alliance/types"
 )
 
 func (k Keeper) CreateAlliance(ctx context.Context, req *types.MsgCreateAllianceProposal) error {

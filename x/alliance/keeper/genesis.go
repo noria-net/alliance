@@ -6,7 +6,7 @@ import (
 	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/terra-money/alliance/x/alliance/types"
+	"github.com/noria-net/alliance/x/alliance/types"
 )
 
 func (k Keeper) InitGenesis(ctx sdk.Context, g *types.GenesisState) []abci.ValidatorUpdate {

@@ -3,7 +3,7 @@ package keeper
 import (
 	"time"
 
-	"github.com/terra-money/alliance/x/alliance/types"
+	"github.com/noria-net/alliance/x/alliance/types"
 
 	"cosmossdk.io/math"
 

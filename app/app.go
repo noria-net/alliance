@@ -106,18 +106,18 @@ import (
 	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
 	"github.com/spf13/cast"
 
-	appparams "github.com/terra-money/alliance/app/params"
-	custombankmodule "github.com/terra-money/alliance/custom/bank"
-	custombankkeeper "github.com/terra-money/alliance/custom/bank/keeper"
+	appparams "github.com/noria-net/alliance/app/params"
+	custombankmodule "github.com/noria-net/alliance/custom/bank"
+	custombankkeeper "github.com/noria-net/alliance/custom/bank/keeper"
 
-	"github.com/terra-money/alliance/app/openapiconsole"
+	"github.com/noria-net/alliance/app/openapiconsole"
 
-	"github.com/terra-money/alliance/docs"
+	"github.com/noria-net/alliance/docs"
 
-	alliancemodule "github.com/terra-money/alliance/x/alliance"
-	alliancemoduleclient "github.com/terra-money/alliance/x/alliance/client"
-	alliancemodulekeeper "github.com/terra-money/alliance/x/alliance/keeper"
-	alliancemoduletypes "github.com/terra-money/alliance/x/alliance/types"
+	alliancemodule "github.com/noria-net/alliance/x/alliance"
+	alliancemoduleclient "github.com/noria-net/alliance/x/alliance/client"
+	alliancemodulekeeper "github.com/noria-net/alliance/x/alliance/keeper"
+	alliancemoduletypes "github.com/noria-net/alliance/x/alliance/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -607,7 +607,7 @@ func New(
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
-	app.mm.SetOrderEndBlockers(
+	app.mm.OrderEndBlockers = []string{
 		crisistypes.ModuleName,
 		govtypes.ModuleName,
 		// stakingtypes.ModuleName,
@@ -630,7 +630,7 @@ func New(
 		vestingtypes.ModuleName,
 		alliancemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
-	)
+	}
 
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.

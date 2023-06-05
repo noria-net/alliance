@@ -52,7 +52,7 @@ ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=alliance \
 		  -X github.com/cosmos/cosmos-sdk/version.AppName=allianced \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
-		  -X github.com/terra-money/alliance/app.Bech32Prefix=alliance \
+		  -X github.com/noria-net/alliance/app.Bech32Prefix=alliance \
 		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)"
 
 ifeq ($(WITH_CLEVELDB),yes)
@@ -91,13 +91,13 @@ install: go.sum
 test: test-unit test-e2e
 
 test-unit:
-	@VERSION=$(VERSION) go test -mod=readonly -tags='ledger test_ledger_mock' github.com/terra-money/alliance/x/alliance/keeper/tests github.com/terra-money/alliance/x/alliance/types/tests
+	@VERSION=$(VERSION) go test -mod=readonly -tags='ledger test_ledger_mock' github.com/noria-net/alliance/x/alliance/keeper/tests github.com/noria-net/alliance/x/alliance/types/tests
 
 test-e2e:
-	@VERSION=$(VERSION) go test -mod=readonly -tags='ledger test_ledger_mock' github.com/terra-money/alliance/x/alliance/tests/e2e
+	@VERSION=$(VERSION) go test -mod=readonly -tags='ledger test_ledger_mock' github.com/noria-net/alliance/x/alliance/tests/e2e
 
 test-benchmark:
-	@VERSION=$(VERSION) go test -v -mod=readonly -tags='ledger test_ledger_mock' github.com/terra-money/alliance/x/alliance/tests/benchmark
+	@VERSION=$(VERSION) go test -v -mod=readonly -tags='ledger test_ledger_mock' github.com/noria-net/alliance/x/alliance/tests/benchmark
 
 .PHONY: test test-unit test-e2e test-benchmark
 ###############################################################################
@@ -120,7 +120,7 @@ lint-docker:
 format: format-tools
 	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" -not -path "*pb.gw.go" | xargs gofumpt -w
 	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" -not -path "*pb.gw.go" | xargs misspell -w
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" -not -path "*pb.gw.go" | xargs goimports -w -local github.com/terra-money/alliance
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*.pb.go" -not -path "*pb.gw.go" | xargs goimports -w -local github.com/noria-net/alliance
 
 ###############################################################################
 ###                                Protobuf                                 ###

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	simulation2 "github.com/terra-money/alliance/x/alliance/tests/simulation"
+	simulation2 "github.com/noria-net/alliance/x/alliance/tests/simulation"
 
 	// this line is used by starport scaffolding # 1
 
@@ -14,10 +14,10 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
-	"github.com/terra-money/alliance/x/alliance/client/cli"
-	"github.com/terra-money/alliance/x/alliance/keeper"
-	migrationsv4 "github.com/terra-money/alliance/x/alliance/migrations/v4"
-	"github.com/terra-money/alliance/x/alliance/types"
+	"github.com/noria-net/alliance/x/alliance/client/cli"
+	"github.com/noria-net/alliance/x/alliance/keeper"
+	migrationsv4 "github.com/noria-net/alliance/x/alliance/migrations/v4"
+	"github.com/noria-net/alliance/x/alliance/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"

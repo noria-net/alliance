@@ -3,7 +3,7 @@ package tests_test
 import (
 	"testing"
 
-	"github.com/terra-money/alliance/app"
+	"github.com/noria-net/alliance/app"
 
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"

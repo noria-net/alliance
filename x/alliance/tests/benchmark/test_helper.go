@@ -12,8 +12,8 @@ import (
 	teststaking "github.com/cosmos/cosmos-sdk/x/staking/testutil"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	test_helpers "github.com/terra-money/alliance/app"
-	"github.com/terra-money/alliance/x/alliance/types"
+	test_helpers "github.com/noria-net/alliance/app"
+	"github.com/noria-net/alliance/x/alliance/types"
 )
 
 func SetupApp(t *testing.T, r *rand.Rand, numAssets int, numValidators int, numDelegators int) (app *test_helpers.App, ctx sdk.Context, assets []types.AllianceAsset, valAddrs []sdk.AccAddress, delAddrs []sdk.AccAddress) {
@@ -23,8 +23,9 @@ func SetupApp(t *testing.T, r *rand.Rand, numAssets int, numValidators int, numD
 	ctx = ctx.WithBlockTime(startTime)
 	for i := 0; i < numAssets; i++ {
 		rewardWeight := simulation.RandomDecAmount(r, sdk.NewDec(1))
+		consensusWeight := simulation.RandomDecAmount(r, sdk.NewDec(1))
 		takeRate := simulation.RandomDecAmount(r, sdk.MustNewDecFromStr("0.0001"))
-		asset := types.NewAllianceAsset(fmt.Sprintf("ASSET%d", i), rewardWeight, sdk.ZeroDec(), sdk.NewDec(5), takeRate, startTime)
+		asset := types.NewAllianceAsset(fmt.Sprintf("ASSET%d", i), rewardWeight, consensusWeight, sdk.ZeroDec(), sdk.NewDec(5), takeRate, startTime)
 		asset.RewardChangeRate = sdk.OneDec().Sub(simulation.RandomDecAmount(r, sdk.MustNewDecFromStr("0.00001")))
 		asset.RewardChangeInterval = time.Minute * 5
 		assets = append(assets, asset)

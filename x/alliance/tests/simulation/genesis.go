@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/types/simulation"
 
-	"github.com/terra-money/alliance/x/alliance/types"
+	"github.com/noria-net/alliance/x/alliance/types"
 )
 
 func genRewardDelayTime(r *rand.Rand) time.Duration {
@@ -40,9 +40,10 @@ func RandomizedGenesisState(simState *module.SimulationState) {
 	var allianceAssets []types.AllianceAsset
 	for i := 0; i < numOfAllianceAssets; i++ {
 		rewardRate := simulation.RandomDecAmount(r, sdk.NewDec(5))
+		consensusRate := simulation.RandomDecAmount(r, sdk.NewDec(3))
 		takeRate := simulation.RandomDecAmount(r, sdk.MustNewDecFromStr("0.0005"))
 		startTime := time.Now().Add(time.Duration(simulation.RandIntBetween(r, 60, 60*60*24*3*2)) * time.Second)
-		allianceAssets = append(allianceAssets, types.NewAllianceAsset(fmt.Sprintf("ASSET%d", i), rewardRate, sdk.NewDec(0), sdk.NewDec(15), takeRate, startTime))
+		allianceAssets = append(allianceAssets, types.NewAllianceAsset(fmt.Sprintf("ASSET%d", i), rewardRate, consensusRate, sdk.NewDec(0), sdk.NewDec(15), takeRate, startTime))
 	}
 
 	allianceGenesis := types.GenesisState{

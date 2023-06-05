@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/terra-money/alliance/app"
-	"github.com/terra-money/alliance/cmd/allianced/cmd"
+	"github.com/noria-net/alliance/app"
+	"github.com/noria-net/alliance/cmd/allianced/cmd"
 
 	"github.com/cosmos/cosmos-sdk/server"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
