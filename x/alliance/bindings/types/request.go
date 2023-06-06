@@ -9,12 +9,13 @@ type AllianceQuery struct {
 }
 
 type AllianceSubQuery struct {
-	Alliance             *types.QueryAllianceRequest                  `json:"alliance"`
-	Alliances            *types.QueryAlliancesRequest                 `json:"alliances"`
-	AlliancesDelegations *types.QueryAllAlliancesDelegationsRequest   `json:"alliances_delegations"`
-	Delegation           *types.QueryAllianceDelegationRequest        `json:"delegation"`
-	DelegationRewards    *types.QueryAllianceDelegationRewardsRequest `json:"delegation_rewards"`
-	Params               *types.QueryParamsRequest                    `json:"params"`
-	Validator            *types.QueryAllianceValidatorRequest         `json:"validator"`
-	Validators           *types.QueryAllAllianceValidatorsRequest     `json:"validators"`
+	Alliance                       *types.QueryAllianceRequest                       `json:"alliance"`
+	Alliances                      *types.QueryAlliancesRequest                      `json:"alliances"`
+	AlliancesDelegations           *types.QueryAllAlliancesDelegationsRequest        `json:"alliances_delegations"`
+	AlliancesDelegationByValidator *types.QueryAlliancesDelegationByValidatorRequest `json:"alliances_delegation_by_validator"`
+	Delegation                     *types.QueryAllianceDelegationRequest             `json:"delegation"`
+	DelegationRewards              *types.QueryAllianceDelegationRewardsRequest      `json:"delegation_rewards"`
+	Params                         *types.QueryParamsRequest                         `json:"params"`
+	Validator                      *types.QueryAllianceValidatorRequest              `json:"validator"`
+	Validators                     *types.QueryAllAllianceValidatorsRequest          `json:"validators"`
 }

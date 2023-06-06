@@ -150,6 +150,16 @@ func (m *CustomQueryHandler) HandleQuery(ctx sdk.Context, caller sdk.AccAddress,
 			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to marshal all alliances delegations")
 		}
 		return bz, nil
+	case req.AlliancesDelegationByValidator != nil:
+		res, err := querier.AlliancesDelegationByValidator(ctx, req.AlliancesDelegationByValidator)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to get all alliances delegations by validator")
+		}
+		bz, err := json.Marshal(res)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to marshal all alliances delegations by validator")
+		}
+		return bz, nil
 	default:
 		return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown alliance query variant"}
 	}
