@@ -187,7 +187,6 @@ message QueryAllianceDelegationRequest {
   string delegator_addr  = 1;
   string validator_addr  = 2;
   string denom           = 3;
-  cosmos.base.query.v1beta1.PageRequest pagination = 4;
 }
 
 message QueryIBCAllianceDelegationRequest {
@@ -215,7 +214,6 @@ message QueryAllianceDelegationRewardsRequest {
   string delegator_addr  = 1;
   string validator_addr  = 2;
   string denom           = 3;
-  cosmos.base.query.v1beta1.PageRequest pagination = 4;
 }
 
 message QueryIBCAllianceDelegationRewardsRequest {

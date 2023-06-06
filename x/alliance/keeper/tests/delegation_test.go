@@ -766,7 +766,6 @@ func TestUndelegateAfterClaimingTakeRate(t *testing.T) {
 		DelegatorAddr: user1.String(),
 		ValidatorAddr: val1.GetOperator().String(),
 		Denom:         AllianceDenomTwo,
-		Pagination:    nil,
 	})
 	require.NoError(t, err)
 	del := res.GetDelegation()
@@ -801,7 +800,6 @@ func TestUndelegateAfterClaimingTakeRate(t *testing.T) {
 		DelegatorAddr: user1.String(),
 		ValidatorAddr: val1.GetOperator().String(),
 		Denom:         AllianceDenomTwo,
-		Pagination:    nil,
 	})
 	require.NoError(t, err)
 	del = res.GetDelegation()
@@ -819,7 +817,6 @@ func TestUndelegateAfterClaimingTakeRate(t *testing.T) {
 		DelegatorAddr: user1.String(),
 		ValidatorAddr: val1.GetOperator().String(),
 		Denom:         AllianceDenomTwo,
-		Pagination:    nil,
 	})
 	require.NoError(t, err)
 	del = res.GetDelegation()

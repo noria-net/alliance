@@ -5,6 +5,8 @@ import (
 	"testing"
 	"time"
 
+	querytypes "github.com/cosmos/cosmos-sdk/types/query"
+
 	"cosmossdk.io/math"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 
@@ -39,7 +41,7 @@ func TestParamsQuery(t *testing.T) {
 
 	query := bindingtypes.AllianceQuery{
 		Alliance: &bindingtypes.AllianceSubQuery{
-			Params: &bindingtypes.ParamsRequest{},
+			Params: &types.QueryParamsRequest{},
 		},
 	}
 
@@ -71,7 +73,7 @@ func TestAssetQuery(t *testing.T) {
 
 	query := bindingtypes.AllianceQuery{
 		Alliance: &bindingtypes.AllianceSubQuery{
-			Alliance: &bindingtypes.Alliance{
+			Alliance: &types.QueryAllianceRequest{
 				Denom: AllianceDenom,
 			},
 		},
@@ -135,13 +137,14 @@ func TestDelegationQuery(t *testing.T) {
 
 	delegationQuery := bindingtypes.AllianceQuery{
 		Alliance: &bindingtypes.AllianceSubQuery{
-			Delegation: &bindingtypes.Delegation{
-				Delegator: delAddr.String(),
-				Validator: val.GetOperator().String(),
-				Denom:     AllianceDenom,
+			Delegation: &types.QueryAllianceDelegationRequest{
+				DelegatorAddr: delAddr.String(),
+				ValidatorAddr: val.GetOperator().String(),
+				Denom:         AllianceDenom,
 			},
 		},
 	}
+
 	qBz, err := json.Marshal(delegationQuery)
 	require.NoError(t, err)
 	rBz, err := querier.TestQuery(ctx, qBz)
@@ -208,10 +211,10 @@ func TestDelegationRewardsQuery(t *testing.T) {
 
 	delegationQuery := bindingtypes.AllianceQuery{
 		Alliance: &bindingtypes.AllianceSubQuery{
-			DelegationRewards: &bindingtypes.DelegationRewards{
-				Delegator: delAddr.String(),
-				Validator: val.GetOperator().String(),
-				Denom:     AllianceDenom,
+			DelegationRewards: &types.QueryAllianceDelegationRewardsRequest{
+				DelegatorAddr: delAddr.String(),
+				ValidatorAddr: val.GetOperator().String(),
+				Denom:         AllianceDenom,
 			},
 		},
 	}
@@ -232,4 +235,241 @@ func TestDelegationRewardsQuery(t *testing.T) {
 			},
 		},
 	}, response)
+}
+
+func TestAllAlliancesQuery(t *testing.T) {
+	app, ctx, genesisTime := createTestContext(t)
+
+	querier := bindings.NewMockCustomQueryHandler(&app.AllianceKeeper)
+
+	query := bindingtypes.AllianceQuery{
+		Alliance: &bindingtypes.AllianceSubQuery{
+			Alliances: &types.QueryAlliancesRequest{
+				Pagination: &querytypes.PageRequest{
+					Offset:     0,
+					Limit:      1,
+					CountTotal: true,
+				},
+			},
+		},
+	}
+	qBz, err := json.Marshal(query)
+	require.NoError(t, err)
+	rBz, err := querier.TestQuery(ctx, qBz)
+	require.NoError(t, err)
+
+	var response types.QueryAlliancesResponse
+	err = json.Unmarshal(rBz, &response)
+	require.NoError(t, err)
+
+	require.Equal(t, types.QueryAlliancesResponse{
+		Alliances: []types.AllianceAsset{
+			{
+				Denom:                AllianceDenom,
+				RewardWeight:         sdk.NewDec(2),
+				ConsensusWeight:      sdk.NewDec(1),
+				TakeRate:             sdk.NewDec(0),
+				TotalTokens:          math.NewInt(0),
+				TotalValidatorShares: sdk.NewDec(0),
+				RewardStartTime:      genesisTime,
+				RewardChangeRate:     sdk.MustNewDecFromStr("1"),
+				RewardChangeInterval: 0,
+				LastRewardChangeTime: genesisTime,
+				RewardWeightRange:    types.RewardWeightRange{Min: sdk.NewDec(0), Max: sdk.NewDec(5)},
+				IsInitialized:        false,
+			},
+		},
+		Pagination: &querytypes.PageResponse{
+			Total: 1,
+		},
+	}, response)
+}
+
+func TestAllAllianceValidators(t *testing.T) {
+	app, ctx, _ := createTestContext(t)
+
+	querier := bindings.NewMockCustomQueryHandler(&app.AllianceKeeper)
+
+	delegations := app.StakingKeeper.GetAllDelegations(ctx)
+	require.Len(t, delegations, 1)
+	// All the addresses needed
+	delAddr, err := sdk.AccAddressFromBech32(delegations[0].DelegatorAddress)
+	require.NoError(t, err)
+	valAddr, err := sdk.ValAddressFromBech32(delegations[0].ValidatorAddress)
+	require.NoError(t, err)
+	val, err := app.AllianceKeeper.GetAllianceValidator(ctx, valAddr)
+	require.NoError(t, err)
+
+	// Mint alliance tokens
+	err = app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, sdk.NewCoins(sdk.NewCoin(AllianceDenom, sdk.NewInt(2000_000))))
+	require.NoError(t, err)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, delAddr, sdk.NewCoins(sdk.NewCoin(AllianceDenom, sdk.NewInt(2000_000))))
+	require.NoError(t, err)
+
+	// Check current total staked tokens
+	totalBonded := app.StakingKeeper.TotalBondedTokens(ctx)
+	require.Equal(t, sdk.NewInt(1000_000), totalBonded)
+
+	// Delegate
+	_, err = app.AllianceKeeper.Delegate(ctx, delAddr, val, sdk.NewCoin(AllianceDenom, sdk.NewInt(1000_000)))
+	require.NoError(t, err)
+
+	query := bindingtypes.AllianceQuery{
+		Alliance: &bindingtypes.AllianceSubQuery{
+			Validators: &types.QueryAllAllianceValidatorsRequest{
+				Pagination: &querytypes.PageRequest{
+					Offset:     0,
+					Limit:      1,
+					CountTotal: true,
+				},
+			},
+		},
+	}
+
+	qBz, err := json.Marshal(query)
+	require.NoError(t, err)
+	rBz, err := querier.TestQuery(ctx, qBz)
+	require.NoError(t, err)
+
+	var res types.QueryAllianceValidatorsResponse
+	err = json.Unmarshal(rBz, &res)
+	require.NoError(t, err)
+
+	require.Equal(t, types.QueryAllianceValidatorsResponse{
+		Validators: []types.QueryAllianceValidatorResponse{
+			{
+				ValidatorAddr:         valAddr.String(),
+				TotalDelegationShares: sdk.NewDecCoins(sdk.NewDecCoin(AllianceDenom, sdk.NewInt(1000_000))),
+				ValidatorShares:       sdk.NewDecCoins(sdk.NewDecCoin(AllianceDenom, sdk.NewInt(1000_000))),
+				TotalStaked:           sdk.NewDecCoins(sdk.NewDecCoin(AllianceDenom, sdk.NewInt(1000_000))),
+			},
+		},
+		Pagination: &querytypes.PageResponse{
+			Total: 1,
+		},
+	}, res)
+}
+
+func TestAllianceValidator(t *testing.T) {
+	app, ctx, _ := createTestContext(t)
+
+	querier := bindings.NewMockCustomQueryHandler(&app.AllianceKeeper)
+
+	delegations := app.StakingKeeper.GetAllDelegations(ctx)
+	require.Len(t, delegations, 1)
+	// All the addresses needed
+	delAddr, err := sdk.AccAddressFromBech32(delegations[0].DelegatorAddress)
+	require.NoError(t, err)
+	valAddr, err := sdk.ValAddressFromBech32(delegations[0].ValidatorAddress)
+	require.NoError(t, err)
+	val, err := app.AllianceKeeper.GetAllianceValidator(ctx, valAddr)
+	require.NoError(t, err)
+
+	// Mint alliance tokens
+	err = app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, sdk.NewCoins(sdk.NewCoin(AllianceDenom, sdk.NewInt(2000_000))))
+	require.NoError(t, err)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, delAddr, sdk.NewCoins(sdk.NewCoin(AllianceDenom, sdk.NewInt(2000_000))))
+	require.NoError(t, err)
+
+	// Check current total staked tokens
+	totalBonded := app.StakingKeeper.TotalBondedTokens(ctx)
+	require.Equal(t, sdk.NewInt(1000_000), totalBonded)
+
+	// Delegate
+	_, err = app.AllianceKeeper.Delegate(ctx, delAddr, val, sdk.NewCoin(AllianceDenom, sdk.NewInt(1000_000)))
+	require.NoError(t, err)
+
+	query := bindingtypes.AllianceQuery{
+		Alliance: &bindingtypes.AllianceSubQuery{
+			Validator: &types.QueryAllianceValidatorRequest{
+				ValidatorAddr: valAddr.String(),
+			},
+		},
+	}
+
+	qBz, err := json.Marshal(query)
+	require.NoError(t, err)
+	rBz, err := querier.TestQuery(ctx, qBz)
+	require.NoError(t, err)
+
+	var res types.QueryAllianceValidatorResponse
+	err = json.Unmarshal(rBz, &res)
+	require.NoError(t, err)
+
+	require.Equal(t, types.QueryAllianceValidatorResponse{
+		ValidatorAddr:         valAddr.String(),
+		TotalDelegationShares: sdk.NewDecCoins(sdk.NewDecCoin(AllianceDenom, sdk.NewInt(1000_000))),
+		ValidatorShares:       sdk.NewDecCoins(sdk.NewDecCoin(AllianceDenom, sdk.NewInt(1000_000))),
+		TotalStaked:           sdk.NewDecCoins(sdk.NewDecCoin(AllianceDenom, sdk.NewInt(1000_000))),
+	}, res)
+}
+
+func TestAlliancesDelegations(t *testing.T) {
+	app, ctx, _ := createTestContext(t)
+
+	querier := bindings.NewMockCustomQueryHandler(&app.AllianceKeeper)
+
+	delegations := app.StakingKeeper.GetAllDelegations(ctx)
+	require.Len(t, delegations, 1)
+	// All the addresses needed
+	delAddr, err := sdk.AccAddressFromBech32(delegations[0].DelegatorAddress)
+	require.NoError(t, err)
+	valAddr, err := sdk.ValAddressFromBech32(delegations[0].ValidatorAddress)
+	require.NoError(t, err)
+	val, err := app.AllianceKeeper.GetAllianceValidator(ctx, valAddr)
+	require.NoError(t, err)
+
+	// Mint alliance tokens
+	err = app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, sdk.NewCoins(sdk.NewCoin(AllianceDenom, sdk.NewInt(2000_000))))
+	require.NoError(t, err)
+	err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, delAddr, sdk.NewCoins(sdk.NewCoin(AllianceDenom, sdk.NewInt(2000_000))))
+	require.NoError(t, err)
+
+	// Check current total staked tokens
+	totalBonded := app.StakingKeeper.TotalBondedTokens(ctx)
+	require.Equal(t, sdk.NewInt(1000_000), totalBonded)
+
+	// Delegate
+	_, err = app.AllianceKeeper.Delegate(ctx, delAddr, val, sdk.NewCoin(AllianceDenom, sdk.NewInt(1000_000)))
+	require.NoError(t, err)
+
+	query := bindingtypes.AllianceQuery{
+		Alliance: &bindingtypes.AllianceSubQuery{
+			AlliancesDelegations: &types.QueryAllAlliancesDelegationsRequest{
+				Pagination: &querytypes.PageRequest{
+					Offset:     0,
+					Limit:      1,
+					CountTotal: true,
+				},
+			},
+		},
+	}
+
+	qBz, err := json.Marshal(query)
+	require.NoError(t, err)
+	rBz, err := querier.TestQuery(ctx, qBz)
+	require.NoError(t, err)
+
+	var res types.QueryAlliancesDelegationsResponse
+	err = json.Unmarshal(rBz, &res)
+	require.NoError(t, err)
+
+	require.Equal(t, types.QueryAlliancesDelegationsResponse{
+		Delegations: []types.DelegationResponse{
+			{
+				Delegation: types.Delegation{
+					DelegatorAddress:      delAddr.String(),
+					ValidatorAddress:      val.OperatorAddress,
+					Denom:                 AllianceDenom,
+					Shares:                sdk.NewDec(1000000),
+					RewardHistory:         nil,
+					LastRewardClaimHeight: 0,
+				},
+				Balance: sdk.NewCoin(AllianceDenom, math.NewInt(1000_000)),
+			},
+		},
+		Pagination: &querytypes.PageResponse{
+			Total: 1,
+		},
+	}, res)
 }

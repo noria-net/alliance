@@ -184,7 +184,6 @@ func TestDelegatingASmallAmount(t *testing.T) {
 		DelegatorAddr: user1.String(),
 		ValidatorAddr: val1.GetOperator().String(),
 		Denom:         allianceAsset2,
-		Pagination:    nil,
 	})
 	require.NoError(t, err)
 
@@ -218,7 +217,6 @@ func TestDelegatingASmallAmount(t *testing.T) {
 		DelegatorAddr: user1.String(),
 		ValidatorAddr: val1.GetOperator().String(),
 		Denom:         allianceAsset2,
-		Pagination:    nil,
 	})
 	require.NoError(t, err)
 	del = res.GetDelegation()
@@ -236,7 +234,6 @@ func TestDelegatingASmallAmount(t *testing.T) {
 		DelegatorAddr: user1.String(),
 		ValidatorAddr: val1.GetOperator().String(),
 		Denom:         allianceAsset2,
-		Pagination:    nil,
 	})
 	require.NoError(t, err)
 	del = res.GetDelegation()
@@ -295,7 +292,6 @@ func TestDelegateAndUndelegateWithSmallAmounts(t *testing.T) {
 		DelegatorAddr: user1.String(),
 		ValidatorAddr: val1.GetOperator().String(),
 		Denom:         allianceAsset2,
-		Pagination:    nil,
 	})
 	require.NoError(t, err)
 	del := res.GetDelegation()
@@ -361,7 +357,6 @@ func TestUnDelegatingSlightlyMoreCoin(t *testing.T) {
 		DelegatorAddr: user1.String(),
 		ValidatorAddr: val1.GetOperator().String(),
 		Denom:         allianceAsset2,
-		Pagination:    nil,
 	})
 	require.NoError(t, err)
 	del := res.GetDelegation()
@@ -426,7 +421,6 @@ func TestReDelegatingSlightlyMoreCoin(t *testing.T) {
 		DelegatorAddr: user1.String(),
 		ValidatorAddr: val1.GetOperator().String(),
 		Denom:         allianceAsset2,
-		Pagination:    nil,
 	})
 	require.NoError(t, err)
 	del := res.GetDelegation()
@@ -491,7 +485,6 @@ func TestDustValidatorSharesAfterUndelegationError(t *testing.T) {
 		DelegatorAddr: user1.String(),
 		ValidatorAddr: val1.GetOperator().String(),
 		Denom:         allianceAsset2,
-		Pagination:    nil,
 	})
 	require.NoError(t, err)
 	del := res.GetDelegation()
@@ -560,7 +553,6 @@ func TestDustValidatorSharesAfterRedelegationError(t *testing.T) {
 		DelegatorAddr: user1.String(),
 		ValidatorAddr: val1.GetOperator().String(),
 		Denom:         allianceAsset2,
-		Pagination:    nil,
 	})
 	require.NoError(t, err)
 	del := res.GetDelegation()

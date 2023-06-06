@@ -657,7 +657,6 @@ AllianceDelegation
 | `delegator_addr` | [string](#string) |  |  |
 | `validator_addr` | [string](#string) |  |  |
 | `denom` | [string](#string) |  |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
 
 
 
@@ -690,7 +689,6 @@ AllianceDelegation
 | `delegator_addr` | [string](#string) |  |  |
 | `validator_addr` | [string](#string) |  |  |
 | `denom` | [string](#string) |  |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
 
 
 
