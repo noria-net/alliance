@@ -50,6 +50,7 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 				return nil, nil, sdkerrors.Wrapf(ErrAllianceDelegateMsg, "failed validating MsgDelegate: %s", err.Error())
 			}
 
+			allianceMsg.Delegate.DelegatorAddress = contractAddr.String()
 			resp, err := msgServer.Delegate(
 				sdk.WrapSDKContext(ctx),
 				allianceMsg.Delegate,
@@ -70,6 +71,7 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 				return nil, nil, sdkerrors.Wrapf(ErrAllianceUndelegateMsg, "failed validating MsgUndelegate: %s", err.Error())
 			}
 
+			allianceMsg.Undelegate.DelegatorAddress = contractAddr.String()
 			resp, err := msgServer.Undelegate(
 				sdk.WrapSDKContext(ctx),
 				allianceMsg.Undelegate,
@@ -90,6 +92,7 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 				return nil, nil, sdkerrors.Wrapf(ErrAllianceRedelegateMsg, "failed validating MsgRedelegate: %s", err.Error())
 			}
 
+			allianceMsg.Redelegate.DelegatorAddress = contractAddr.String()
 			resp, err := msgServer.Redelegate(
 				sdk.WrapSDKContext(ctx),
 				allianceMsg.Redelegate,
@@ -110,6 +113,7 @@ func (m *CustomMessenger) DispatchMsg(ctx sdk.Context, contractAddr sdk.AccAddre
 				return nil, nil, sdkerrors.Wrapf(ErrAllianceClaimRewardsMsg, "failed validating MsgClaimRewards: %s", err.Error())
 			}
 
+			allianceMsg.ClaimDelegationRewards.DelegatorAddress = contractAddr.String()
 			resp, err := msgServer.ClaimDelegationRewards(
 				sdk.WrapSDKContext(ctx),
 				allianceMsg.ClaimDelegationRewards,
