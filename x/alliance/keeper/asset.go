@@ -157,6 +157,15 @@ func (k Keeper) RebalanceBondTokenWeights(ctx sdk.Context, assets []*types.Allia
 			if valShares.IsPositive() && bondedValidatorShares.IsPositive() {
 				expectedBondAmount = expectedBondAmount.Add(valShares.Quo(bondedValidatorShares).Mul(expectedBondAmountForAsset))
 			}
+			/*
+
+				TODO:
+				Add a new property on alliance asset: ConsensusCap
+				Use that property to cap the voting power of an asset
+				i.e.:
+				newValPowerForAsset = min(newValPowerForAsset, asset.ConsensusCap)
+
+			*/
 			newValPowerForAsset := bondedValidatorShares.Mul(asset.ConsensusWeight).Quo(powerReduction)
 			expectedPower = expectedPower.Add(newValPowerForAsset)
 		}
