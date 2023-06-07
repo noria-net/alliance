@@ -43,16 +43,10 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) []abci.ValidatorUpdate {
 	}
 
 	if len(valUpdates) > 0 && len(newUpdates) == 0 && len(assets) > 0 {
-		// fmt.Printf("\n########### Already processed changes in previous block\n")
 		return []abci.ValidatorUpdate{}
 	}
 
-	// fmt.Printf("\n########### Native Voting Power Changes: %v\n", valUpdates)
-	// fmt.Printf("\n########### Weighted Voting Power Changes: %v\n", newUpdates)
-
-	// merge validator updates
 	mergedUpdates := mergeValidatorUpdates(valUpdates, newUpdates)
-	// fmt.Printf("\n########### Merged Validator Updates: %v\n\n", mergedUpdates)
 
 	return mergedUpdates
 }
