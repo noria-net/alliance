@@ -13,9 +13,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	banktypes "github.com/terra-money/alliance/custom/bank/types"
-	alliancekeeper "github.com/terra-money/alliance/x/alliance/keeper"
-	alliancetypes "github.com/terra-money/alliance/x/alliance/types"
+	banktypes "github.com/noria-net/alliance/custom/bank/types"
+	alliancekeeper "github.com/noria-net/alliance/x/alliance/keeper"
+	alliancetypes "github.com/noria-net/alliance/x/alliance/types"
 )
 
 type Keeper struct {

@@ -17,7 +17,7 @@ import (
 
 	"cosmossdk.io/math"
 
-	alliancetypes "github.com/terra-money/alliance/x/alliance/types"
+	alliancetypes "github.com/noria-net/alliance/x/alliance/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -40,7 +40,7 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/terra-money/alliance/app"
+	"github.com/noria-net/alliance/app"
 )
 
 var (

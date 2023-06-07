@@ -16,9 +16,9 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	test_helpers "github.com/terra-money/alliance/app"
-	"github.com/terra-money/alliance/x/alliance/keeper"
-	"github.com/terra-money/alliance/x/alliance/types"
+	test_helpers "github.com/noria-net/alliance/app"
+	"github.com/noria-net/alliance/x/alliance/keeper"
+	"github.com/noria-net/alliance/x/alliance/types"
 )
 
 var ULunaAlliance = "uluna"
@@ -34,6 +34,7 @@ func TestQueryAlliances(t *testing.T) {
 			{
 				Denom:             AllianceDenom,
 				RewardWeight:      sdk.NewDec(2),
+				ConsensusWeight:   sdk.NewDec(2),
 				RewardWeightRange: types.RewardWeightRange{Min: sdk.NewDec(0), Max: sdk.NewDec(5)},
 				TakeRate:          sdk.NewDec(0),
 				TotalTokens:       sdk.ZeroInt(),
@@ -41,6 +42,7 @@ func TestQueryAlliances(t *testing.T) {
 			{
 				Denom:             AllianceDenomTwo,
 				RewardWeight:      sdk.NewDec(10),
+				ConsensusWeight:   sdk.NewDec(1),
 				RewardWeightRange: types.RewardWeightRange{Min: sdk.NewDec(2), Max: sdk.NewDec(12)},
 				TakeRate:          sdk.MustNewDecFromStr("0.14159265359"),
 				TotalTokens:       sdk.ZeroInt(),
@@ -59,6 +61,7 @@ func TestQueryAlliances(t *testing.T) {
 			{
 				Denom:                "alliance",
 				RewardWeight:         sdk.NewDec(2),
+				ConsensusWeight:      sdk.NewDec(2),
 				RewardWeightRange:    types.RewardWeightRange{Min: sdk.NewDec(0), Max: sdk.NewDec(5)},
 				TakeRate:             sdk.NewDec(0),
 				TotalTokens:          sdk.ZeroInt(),
@@ -69,6 +72,7 @@ func TestQueryAlliances(t *testing.T) {
 			{
 				Denom:                "alliance2",
 				RewardWeight:         sdk.NewDec(10),
+				ConsensusWeight:      sdk.NewDec(1),
 				RewardWeightRange:    types.RewardWeightRange{Min: sdk.NewDec(2), Max: sdk.NewDec(12)},
 				TakeRate:             sdk.MustNewDecFromStr("0.14159265359"),
 				TotalTokens:          sdk.ZeroInt(),
@@ -95,6 +99,7 @@ func TestQueryAnUniqueAlliance(t *testing.T) {
 			{
 				Denom:                AllianceDenom,
 				RewardWeight:         sdk.NewDec(2),
+				ConsensusWeight:      sdk.NewDec(1),
 				RewardWeightRange:    types.RewardWeightRange{Min: sdk.NewDec(0), Max: sdk.NewDec(5)},
 				TakeRate:             sdk.NewDec(0),
 				TotalTokens:          sdk.ZeroInt(),
@@ -104,6 +109,7 @@ func TestQueryAnUniqueAlliance(t *testing.T) {
 			{
 				Denom:                AllianceDenomTwo,
 				RewardWeight:         sdk.NewDec(10),
+				ConsensusWeight:      sdk.NewDec(1),
 				RewardWeightRange:    types.RewardWeightRange{Min: sdk.NewDec(2), Max: sdk.NewDec(12)},
 				TakeRate:             sdk.MustNewDecFromStr("0.14159265359"),
 				TotalTokens:          sdk.ZeroInt(),
@@ -125,6 +131,7 @@ func TestQueryAnUniqueAlliance(t *testing.T) {
 		Alliance: &types.AllianceAsset{
 			Denom:                "alliance2",
 			RewardWeight:         sdk.NewDec(10),
+			ConsensusWeight:      sdk.NewDec(1),
 			RewardWeightRange:    types.RewardWeightRange{Min: sdk.NewDec(2), Max: sdk.NewDec(12)},
 			TakeRate:             sdk.MustNewDecFromStr("0.14159265359"),
 			TotalTokens:          sdk.ZeroInt(),
@@ -146,6 +153,7 @@ func TestQueryAnUniqueIBCAlliance(t *testing.T) {
 			{
 				Denom:                "ibc/" + AllianceDenomTwo,
 				RewardWeight:         sdk.NewDec(10),
+				ConsensusWeight:      sdk.NewDec(1),
 				RewardWeightRange:    types.RewardWeightRange{Min: sdk.NewDec(2), Max: sdk.NewDec(12)},
 				TakeRate:             sdk.MustNewDecFromStr("0.14159265359"),
 				TotalTokens:          sdk.ZeroInt(),
@@ -170,6 +178,7 @@ func TestQueryAnUniqueIBCAlliance(t *testing.T) {
 		Alliance: &types.AllianceAsset{
 			Denom:                "ibc/alliance2",
 			RewardWeight:         sdk.NewDec(10),
+			ConsensusWeight:      sdk.NewDec(1),
 			RewardWeightRange:    types.RewardWeightRange{Min: sdk.NewDec(2), Max: sdk.NewDec(12)},
 			TakeRate:             sdk.MustNewDecFromStr("0.14159265359"),
 			TotalTokens:          sdk.ZeroInt(),
@@ -184,6 +193,7 @@ func TestQueryAnUniqueIBCAlliance(t *testing.T) {
 		Alliance: &types.AllianceAsset{
 			Denom:                "ibc/alliance2",
 			RewardWeight:         sdk.NewDec(10),
+			ConsensusWeight:      sdk.NewDec(1),
 			RewardWeightRange:    types.RewardWeightRange{Min: sdk.NewDec(2), Max: sdk.NewDec(12)},
 			TakeRate:             sdk.MustNewDecFromStr("0.14159265359"),
 			TotalTokens:          sdk.ZeroInt(),
@@ -301,7 +311,7 @@ func TestClaimQueryReward(t *testing.T) {
 	require.Nil(t, delErr)
 	require.Equal(t, sdk.NewDec(1000000000), *delRes)
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
-	err := app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err := app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 
 	// ...and advance block...

@@ -7,7 +7,7 @@ import "alliance/params.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/terra-money/alliance/x/alliance/types";
+option go_package = "github.com/noria-net/alliance/x/alliance/types";
 
 message RewardWeightRange {
   option (gogoproto.equal)            = false;
@@ -71,6 +71,11 @@ message AllianceAsset {
   RewardWeightRange reward_weight_range = 10 [(gogoproto.nullable) = false];
   // flag to check if an asset has completed the initialization process after the reward delay
   bool is_initialized = 11;
+
+  string consensus_weight = 12 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ];
 }
 
 message RewardWeightChangeSnapshot {

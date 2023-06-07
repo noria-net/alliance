@@ -156,6 +156,7 @@ key: denom value: AllianceAsset
 | `last_reward_change_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `reward_weight_range` | [RewardWeightRange](#alliance.RewardWeightRange) |  | set a bound of weight range to limit how much reward weights can scale. |
 | `is_initialized` | [bool](#bool) |  | flag to check if an asset has completed the initialization process after the reward delay |
+| `consensus_weight` | [string](#string) |  |  |
 
 
 
@@ -221,6 +222,7 @@ key: denom value: AllianceAsset
 | `global_reward_history` | [RewardHistory](#alliance.RewardHistory) | repeated |  |
 | `total_delegator_shares` | [cosmos.base.v1beta1.DecCoin](#cosmos.base.v1beta1.DecCoin) | repeated |  |
 | `validator_shares` | [cosmos.base.v1beta1.DecCoin](#cosmos.base.v1beta1.DecCoin) | repeated |  |
+| `voting_power` | [int64](#int64) |  |  |
 
 
 
@@ -535,6 +537,7 @@ GenesisState defines the module's genesis state.
 | `reward_change_rate` | [string](#string) |  |  |
 | `reward_change_interval` | [google.protobuf.Duration](#google.protobuf.Duration) |  |  |
 | `reward_weight_range` | [RewardWeightRange](#alliance.RewardWeightRange) |  | set a bound of weight range to limit how much reward weights can scale. |
+| `consensus_weight` | [string](#string) |  |  |
 
 
 
@@ -573,6 +576,7 @@ GenesisState defines the module's genesis state.
 | `take_rate` | [string](#string) |  |  |
 | `reward_change_rate` | [string](#string) |  |  |
 | `reward_change_interval` | [google.protobuf.Duration](#google.protobuf.Duration) |  |  |
+| `consensus_weight` | [string](#string) |  |  |
 
 
 
@@ -653,7 +657,6 @@ AllianceDelegation
 | `delegator_addr` | [string](#string) |  |  |
 | `validator_addr` | [string](#string) |  |  |
 | `denom` | [string](#string) |  |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
 
 
 
@@ -686,7 +689,6 @@ AllianceDelegation
 | `delegator_addr` | [string](#string) |  |  |
 | `validator_addr` | [string](#string) |  |  |
 | `denom` | [string](#string) |  |  |
-| `pagination` | [cosmos.base.query.v1beta1.PageRequest](#cosmos.base.query.v1beta1.PageRequest) |  |  |
 
 
 

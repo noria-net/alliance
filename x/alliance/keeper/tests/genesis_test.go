@@ -7,8 +7,8 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	teststaking "github.com/cosmos/cosmos-sdk/x/staking/testutil"
 
-	test_helpers "github.com/terra-money/alliance/app"
-	"github.com/terra-money/alliance/x/alliance/types"
+	test_helpers "github.com/noria-net/alliance/app"
+	"github.com/noria-net/alliance/x/alliance/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
@@ -23,7 +23,7 @@ func TestGenesis(t *testing.T) {
 			LastTakeRateClaimTime: time.Unix(0, 0).UTC(),
 		},
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset("stake", sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(2), sdk.ZeroDec(), ctx.BlockTime()),
+			types.NewAllianceAsset("stake", sdk.NewDec(1), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(2), sdk.ZeroDec(), ctx.BlockTime()),
 		},
 	})
 
@@ -41,6 +41,7 @@ func TestGenesis(t *testing.T) {
 	require.Equal(t, &types.AllianceAsset{
 		Denom:                "stake",
 		RewardWeight:         sdk.NewDec(1.0),
+		ConsensusWeight:      sdk.NewDec(1.0),
 		RewardWeightRange:    types.RewardWeightRange{Min: sdk.ZeroDec(), Max: sdk.NewDec(2.0)},
 		TakeRate:             sdk.NewDec(0.0),
 		TotalTokens:          sdk.ZeroInt(),
@@ -114,7 +115,7 @@ func TestExportAndImportGenesis(t *testing.T) {
 
 	// Trigger update asset
 	ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Hour * 25)).WithBlockHeight(ctx.BlockHeight() + 1)
-	err = app.AllianceKeeper.UpdateAllianceAsset(ctx, types.NewAllianceAsset(AllianceDenom, sdk.MustNewDecFromStr("0.5"), sdk.ZeroDec(), sdk.OneDec(), sdk.ZeroDec(), ctx.BlockTime()))
+	err = app.AllianceKeeper.UpdateAllianceAsset(ctx, types.NewAllianceAsset(AllianceDenom, sdk.MustNewDecFromStr("0.5"), sdk.NewDec(1), sdk.ZeroDec(), sdk.OneDec(), sdk.ZeroDec(), ctx.BlockTime()))
 	require.NoError(t, err)
 
 	genesisState := app.AllianceKeeper.ExportGenesis(ctx)

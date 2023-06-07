@@ -28,5 +28,5 @@ buf generate --template buf.gen.doc.yml
 cd ..
 
 # move proto files to the right places
-cp -r github.com/terra-money/alliance/* ./
+cp -r github.com/noria-net/alliance/* ./
 rm -rf github.com

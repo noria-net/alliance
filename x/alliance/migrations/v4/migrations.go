@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	alliancekeeper "github.com/terra-money/alliance/x/alliance/keeper"
-	"github.com/terra-money/alliance/x/alliance/types"
+	alliancekeeper "github.com/noria-net/alliance/x/alliance/keeper"
+	"github.com/noria-net/alliance/x/alliance/types"
 )
 
 func Migrate(k alliancekeeper.Keeper) func(ctx sdk.Context) error {

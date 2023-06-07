@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	test_helpers "github.com/terra-money/alliance/app"
-	"github.com/terra-money/alliance/x/alliance"
-	"github.com/terra-money/alliance/x/alliance/types"
+	test_helpers "github.com/noria-net/alliance/app"
+	"github.com/noria-net/alliance/x/alliance"
+	"github.com/noria-net/alliance/x/alliance/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	teststaking "github.com/cosmos/cosmos-sdk/x/staking/testutil"
@@ -103,7 +103,7 @@ func TestSlashingEvent(t *testing.T) {
 	require.NoError(t, err)
 
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 	require.Equal(t, sdk.NewInt(13_000_000), app.StakingKeeper.TotalBondedTokens(ctx))
 
@@ -125,7 +125,7 @@ func TestSlashingEvent(t *testing.T) {
 
 	// After rebalancing, it should recover the tokens
 	assets = app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 	require.Equal(t, sdk.NewInt(12_999_999), app.StakingKeeper.TotalBondedTokens(ctx))
 
@@ -242,7 +242,7 @@ func TestSlashingAfterRedelegation(t *testing.T) {
 	require.NoError(t, err)
 
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 	require.Equal(t, sdk.NewInt(12_999_999), app.StakingKeeper.TotalBondedTokens(ctx))
 
@@ -250,7 +250,7 @@ func TestSlashingAfterRedelegation(t *testing.T) {
 	require.NoError(t, err)
 
 	assets = app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 	require.Equal(t, sdk.NewInt(13_000_000), app.StakingKeeper.TotalBondedTokens(ctx))
 
@@ -376,7 +376,7 @@ func TestSlashingAfterUndelegation(t *testing.T) {
 	require.NoError(t, err)
 
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 	require.Equal(t, sdk.NewInt(12_999_999), app.StakingKeeper.TotalBondedTokens(ctx))
 
@@ -388,7 +388,7 @@ func TestSlashingAfterUndelegation(t *testing.T) {
 	require.True(t, undelegationIndexIter.Valid())
 
 	assets = app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 	require.Equal(t, sdk.NewInt(13_000_000), app.StakingKeeper.TotalBondedTokens(ctx))
 

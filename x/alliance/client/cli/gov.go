@@ -10,13 +10,13 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types/v1beta1"
 	"github.com/spf13/cobra"
 
-	"github.com/terra-money/alliance/x/alliance/types"
+	"github.com/noria-net/alliance/x/alliance/types"
 )
 
 func CreateAlliance() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-alliance denom reward-weight reward-weight-min reward-weight-max take-rate reward-change-rate reward-change-interval",
-		Args:  cobra.ExactArgs(7),
+		Use:   "create-alliance denom reward-weight reward-weight-min reward-weight-max consensus-weight take-rate reward-change-rate reward-change-interval",
+		Args:  cobra.ExactArgs(8),
 		Short: "Create an alliance with the specified parameters",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -50,17 +50,22 @@ func CreateAlliance() *cobra.Command {
 				return err
 			}
 
-			takeRate, err := sdk.NewDecFromStr(args[4])
+			consensusWeight, err := sdk.NewDecFromStr(args[4])
 			if err != nil {
 				return err
 			}
 
-			rewardChangeRate, err := sdk.NewDecFromStr(args[5])
+			takeRate, err := sdk.NewDecFromStr(args[5])
 			if err != nil {
 				return err
 			}
 
-			rewardChangeInterval, err := time.ParseDuration(args[6])
+			rewardChangeRate, err := sdk.NewDecFromStr(args[6])
+			if err != nil {
+				return err
+			}
+
+			rewardChangeInterval, err := time.ParseDuration(args[7])
 			if err != nil {
 				return err
 			}
@@ -86,6 +91,7 @@ func CreateAlliance() *cobra.Command {
 					Min: rewardWeightMin,
 					Max: rewardWeightMax,
 				},
+				consensusWeight,
 				takeRate,
 				rewardChangeRate,
 				rewardChangeInterval,
@@ -118,8 +124,8 @@ func CreateAlliance() *cobra.Command {
 
 func UpdateAlliance() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update-alliance denom reward-weight take-rate reward-change-rate reward-change-interval",
-		Args:  cobra.ExactArgs(5),
+		Use:   "update-alliance denom reward-weight consensus-weight take-rate reward-change-rate reward-change-interval",
+		Args:  cobra.ExactArgs(6),
 		Short: "Update an alliance with the specified parameters",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -143,17 +149,22 @@ func UpdateAlliance() *cobra.Command {
 				return err
 			}
 
-			takeRate, err := sdk.NewDecFromStr(args[2])
+			consensusWeight, err := sdk.NewDecFromStr(args[2])
 			if err != nil {
 				return err
 			}
 
-			rewardChangeRate, err := sdk.NewDecFromStr(args[3])
+			takeRate, err := sdk.NewDecFromStr(args[3])
 			if err != nil {
 				return err
 			}
 
-			rewardChangeInterval, err := time.ParseDuration(args[4])
+			rewardChangeRate, err := sdk.NewDecFromStr(args[4])
+			if err != nil {
+				return err
+			}
+
+			rewardChangeInterval, err := time.ParseDuration(args[5])
 			if err != nil {
 				return err
 			}
@@ -175,6 +186,7 @@ func UpdateAlliance() *cobra.Command {
 				description,
 				denom,
 				rewardWeight,
+				consensusWeight,
 				takeRate,
 				rewardChangeRate,
 				rewardChangeInterval,

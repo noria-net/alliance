@@ -21,8 +21,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltest "github.com/cosmos/cosmos-sdk/x/genutil/client/testutil"
 
-	"github.com/terra-money/alliance/app"
-	alliancecmd "github.com/terra-money/alliance/cmd/allianced/cmd"
+	"github.com/noria-net/alliance/app"
+	alliancecmd "github.com/noria-net/alliance/cmd/allianced/cmd"
 )
 
 var testMbm = module.NewBasicManager(genutil.AppModuleBasic{})

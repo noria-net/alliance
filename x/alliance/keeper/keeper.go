@@ -3,8 +3,9 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/terra-money/alliance/x/alliance/types"
+	"github.com/noria-net/alliance/x/alliance/types"
 
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cometbft/cometbft/libs/log"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -61,4 +62,18 @@ func (k Keeper) StakingHooks() Hooks {
 
 func (k Keeper) StoreKey() storetypes.StoreKey {
 	return k.storeKey
+}
+
+func (k Keeper) BlockValidatorUpdates(ctx sdk.Context) []abci.ValidatorUpdate {
+	return k.stakingKeeper.BlockValidatorUpdates(ctx)
+}
+
+func (k Keeper) ComputeValidatorConsensusPower(ctx sdk.Context) []abci.ValidatorUpdate {
+	updates := []abci.ValidatorUpdate{}
+	validators := k.stakingKeeper.GetAllValidators(ctx)
+	for _, validator := range validators {
+		newUpdate := validator.ABCIValidatorUpdate(sdk.DefaultPowerReduction)
+		updates = append(updates, newUpdate)
+	}
+	return updates
 }

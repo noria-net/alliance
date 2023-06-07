@@ -3,138 +3,164 @@ package bindings
 import (
 	"encoding/json"
 
+	sdkerrors "cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/terra-money/alliance/x/alliance/bindings/types"
-	"github.com/terra-money/alliance/x/alliance/keeper"
-	alliancetypes "github.com/terra-money/alliance/x/alliance/types"
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
+	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	"github.com/noria-net/alliance/x/alliance/bindings/types"
+	"github.com/noria-net/alliance/x/alliance/keeper"
+	alliancetypes "github.com/noria-net/alliance/x/alliance/types"
 )
 
-type QueryPlugin struct {
-	allianceKeeper keeper.Keeper
-}
-
-func NewAllianceQueryPlugin(keeper keeper.Keeper) *QueryPlugin {
-	return &QueryPlugin{
-		allianceKeeper: keeper,
+func CustomQueryDecorator(allianceKeeper *keeper.Keeper) func(wasmkeeper.WasmVMQueryHandler) wasmkeeper.WasmVMQueryHandler {
+	return func(old wasmkeeper.WasmVMQueryHandler) wasmkeeper.WasmVMQueryHandler {
+		return &CustomQueryHandler{
+			wrapped:        old,
+			allianceKeeper: allianceKeeper,
+		}
 	}
 }
 
-func CustomQuerier(q *QueryPlugin) func(ctx sdk.Context, request json.RawMessage) (result []byte, err error) {
-	return func(ctx sdk.Context, request json.RawMessage) (result []byte, err error) {
-		var AllianceRequest types.AllianceQuery
-		err = json.Unmarshal(request, &AllianceRequest)
+type MockQueryHandler struct {
+}
+
+func (m *MockQueryHandler) HandleQuery(ctx sdk.Context, caller sdk.AccAddress, request wasmvmtypes.QueryRequest) ([]byte, error) {
+	return nil, nil
+}
+
+func NewMockCustomQueryHandler(allianceKeeper *keeper.Keeper) *CustomQueryHandler {
+	return &CustomQueryHandler{
+		wrapped:        &MockQueryHandler{},
+		allianceKeeper: allianceKeeper,
+	}
+}
+
+func (m *CustomQueryHandler) TestQuery(ctx sdk.Context, payload []byte) ([]byte, error) {
+	req := wasmvmtypes.QueryRequest{
+		Custom: payload,
+	}
+	addr := sdk.AccAddress("addr1")
+	return m.HandleQuery(ctx, addr, req)
+}
+
+type CustomQueryHandler struct {
+	wrapped        wasmkeeper.WasmVMQueryHandler
+	allianceKeeper *keeper.Keeper
+}
+
+func (m *CustomQueryHandler) HandleQuery(ctx sdk.Context, caller sdk.AccAddress, request wasmvmtypes.QueryRequest) ([]byte, error) {
+	if request.Custom == nil {
+		return m.wrapped.HandleQuery(ctx, caller, request)
+	}
+	customQuery := request.Custom
+
+	var allianceQuery types.AllianceQuery
+	if err := json.Unmarshal(customQuery, &allianceQuery); err != nil {
+		return nil, sdkerrors.Wrap(ErrAllianceMsg, "requires 'alliance' field")
+	}
+	if allianceQuery.Alliance == nil {
+		return m.wrapped.HandleQuery(ctx, caller, request)
+	}
+
+	req := allianceQuery.Alliance
+
+	var querier alliancetypes.QueryServer = keeper.QueryServer{
+		Keeper: *m.allianceKeeper,
+	}
+
+	switch {
+	case req.Params != nil:
+		res, err := querier.Params(ctx, (*alliancetypes.QueryParamsRequest)(req.Params))
 		if err != nil {
-			return
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to get alliance params")
 		}
-		if AllianceRequest.Alliance != nil {
-			return q.GetAlliance(ctx, AllianceRequest.Alliance.Denom)
+		bz, err := json.Marshal(res)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to marshal alliance params")
 		}
-		if AllianceRequest.Delegation != nil {
-			return q.GetDelegation(ctx, AllianceRequest.Delegation.Denom, AllianceRequest.Delegation.Delegator, AllianceRequest.Delegation.Validator)
+		return bz, nil
+	case req.Alliance != nil:
+		res, err := querier.Alliance(ctx, req.Alliance)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to get alliance")
 		}
-		if AllianceRequest.DelegationRewards != nil {
-			return q.GetDelegationRewards(ctx, AllianceRequest.DelegationRewards.Denom, AllianceRequest.DelegationRewards.Delegator, AllianceRequest.DelegationRewards.Validator)
+		bz, err := json.Marshal(res)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to marshal alliance")
 		}
-		return nil, nil
+		return bz, nil
+	case req.Delegation != nil:
+		res, err := querier.AllianceDelegation(ctx, req.Delegation)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to get delegation")
+		}
+		bz, err := json.Marshal(res)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to marshal alliance delegations")
+		}
+		return bz, nil
+	case req.DelegationRewards != nil:
+		res, err := querier.AllianceDelegationRewards(ctx, req.DelegationRewards)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to get delegation rewards")
+		}
+		bz, err := json.Marshal(res)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to marshal alliance delegation rewards")
+		}
+		return bz, nil
+	case req.Alliances != nil:
+		res, err := querier.Alliances(ctx, req.Alliances)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to get all alliances")
+		}
+		bz, err := json.Marshal(res)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to marshal all alliances")
+		}
+		return bz, nil
+	case req.Validators != nil:
+		res, err := querier.AllAllianceValidators(ctx, req.Validators)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to get all alliance validators")
+		}
+		bz, err := json.Marshal(res)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to marshal all alliance validators")
+		}
+		return bz, nil
+	case req.Validator != nil:
+		res, err := querier.AllianceValidator(ctx, req.Validator)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to get alliance validator")
+		}
+		bz, err := json.Marshal(res)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to marshal alliance validator")
+		}
+		return bz, nil
+	case req.AlliancesDelegations != nil:
+		res, err := querier.AllAlliancesDelegations(ctx, req.AlliancesDelegations)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to get all alliances delegations")
+		}
+		bz, err := json.Marshal(res)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to marshal all alliances delegations")
+		}
+		return bz, nil
+	case req.AlliancesDelegationByValidator != nil:
+		res, err := querier.AlliancesDelegationByValidator(ctx, req.AlliancesDelegationByValidator)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to get all alliances delegations by validator")
+		}
+		bz, err := json.Marshal(res)
+		if err != nil {
+			return nil, sdkerrors.Wrap(ErrAllianceMsg, "failed to marshal all alliances delegations by validator")
+		}
+		return bz, nil
+	default:
+		return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown alliance query variant"}
 	}
-}
-
-func (q *QueryPlugin) GetAlliance(ctx sdk.Context, denom string) (res []byte, err error) {
-	asset, found := q.allianceKeeper.GetAssetByDenom(ctx, denom)
-	if !found {
-		return nil, alliancetypes.ErrUnknownAsset
-	}
-	res, err = json.Marshal(types.AllianceResponse{
-		Denom:                asset.Denom,
-		RewardWeight:         asset.RewardWeight.String(),
-		TakeRate:             asset.TakeRate.String(),
-		TotalTokens:          asset.TotalTokens.String(),
-		TotalValidatorShares: asset.TotalValidatorShares.String(),
-		RewardStartTime:      uint64(asset.RewardStartTime.Nanosecond()),
-		RewardChangeRate:     asset.RewardChangeRate.String(),
-		LastRewardChangeTime: uint64(asset.LastRewardChangeTime.Nanosecond()),
-		RewardWeightRange: types.RewardWeightRange{
-			Min: asset.RewardWeightRange.Min.String(),
-			Max: asset.RewardWeightRange.Max.String(),
-		},
-		IsInitialized: asset.IsInitialized,
-	})
-	return
-}
-
-func (q *QueryPlugin) GetDelegation(ctx sdk.Context, denom string, delegator string, validator string) (res []byte, err error) {
-	delegatorAddr, err := sdk.AccAddressFromBech32(delegator)
-	if err != nil {
-		return
-	}
-	validatorAddr, err := sdk.ValAddressFromBech32(validator)
-	if err != nil {
-		return
-	}
-	delegation, found := q.allianceKeeper.GetDelegation(ctx, delegatorAddr, validatorAddr, denom)
-	if !found {
-		return nil, alliancetypes.ErrDelegationNotFound
-	}
-	asset, found := q.allianceKeeper.GetAssetByDenom(ctx, denom)
-	if !found {
-		return nil, alliancetypes.ErrUnknownAsset
-	}
-
-	allianceValidator, err := q.allianceKeeper.GetAllianceValidator(ctx, validatorAddr)
-	if err != nil {
-		return nil, err
-	}
-	balance := alliancetypes.GetDelegationTokens(delegation, allianceValidator, asset)
-	res, err = json.Marshal(types.DelegationResponse{
-		Delegator: delegation.DelegatorAddress,
-		Validator: delegation.ValidatorAddress,
-		Denom:     delegation.Denom,
-		Amount: types.Coin{
-			Denom:  balance.Denom,
-			Amount: balance.Amount.String(),
-		},
-	})
-	return res, err
-}
-
-func (q *QueryPlugin) GetDelegationRewards(ctx sdk.Context, denom string, delegator string, validator string) (res []byte, err error) {
-	delegatorAddr, err := sdk.AccAddressFromBech32(delegator)
-	if err != nil {
-		return
-	}
-	validatorAddr, err := sdk.ValAddressFromBech32(validator)
-	if err != nil {
-		return
-	}
-	delegation, found := q.allianceKeeper.GetDelegation(ctx, delegatorAddr, validatorAddr, denom)
-	if !found {
-		return nil, alliancetypes.ErrDelegationNotFound
-	}
-	allianceValidator, err := q.allianceKeeper.GetAllianceValidator(ctx, validatorAddr)
-	if err != nil {
-		return nil, err
-	}
-	asset, found := q.allianceKeeper.GetAssetByDenom(ctx, denom)
-	if !found {
-		return nil, alliancetypes.ErrUnknownAsset
-	}
-
-	rewards, _, err := q.allianceKeeper.CalculateDelegationRewards(ctx, delegation, allianceValidator, asset)
-	if err != nil {
-		return
-	}
-
-	var coins []types.Coin
-	for _, coin := range rewards {
-		coins = append(coins, types.Coin{
-			Denom:  coin.Denom,
-			Amount: coin.Amount.String(),
-		})
-	}
-
-	res, err = json.Marshal(types.DelegationRewardsResponse{
-		Rewards: coins,
-	})
-	return res, err
 }

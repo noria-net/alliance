@@ -4,10 +4,10 @@ import (
 	"testing"
 	"time"
 
-	test_helpers "github.com/terra-money/alliance/app"
-	"github.com/terra-money/alliance/x/alliance"
-	"github.com/terra-money/alliance/x/alliance/keeper"
-	"github.com/terra-money/alliance/x/alliance/types"
+	test_helpers "github.com/noria-net/alliance/app"
+	"github.com/noria-net/alliance/x/alliance"
+	"github.com/noria-net/alliance/x/alliance/keeper"
+	"github.com/noria-net/alliance/x/alliance/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
@@ -28,8 +28,8 @@ func TestDelegationWithASingleAsset(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), genesisTime),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), genesisTime),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), genesisTime),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), genesisTime),
 		},
 	})
 	delegations := app.StakingKeeper.GetAllDelegations(ctx)
@@ -65,7 +65,7 @@ func TestDelegationWithASingleAsset(t *testing.T) {
 	// Manually trigger rebalancing
 	app.AllianceKeeper.GetAssetByDenom(ctx, AllianceDenom)
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 
 	allianceBonded := app.StakingKeeper.GetDelegatorBonded(ctx, moduleAddr)
@@ -101,6 +101,7 @@ func TestDelegationWithASingleAsset(t *testing.T) {
 	require.Equal(t, types.AllianceAsset{
 		Denom:                AllianceDenom,
 		RewardWeight:         sdk.NewDec(2),
+		ConsensusWeight:      sdk.NewDec(1),
 		RewardWeightRange:    types.RewardWeightRange{Min: sdk.NewDec(0), Max: sdk.NewDec(5)},
 		TakeRate:             sdk.NewDec(0),
 		TotalTokens:          sdk.NewInt(1000_000),
@@ -116,7 +117,7 @@ func TestDelegationWithASingleAsset(t *testing.T) {
 
 	// Manually trigger rebalancing
 	assets = app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 
 	// Check delegation in alliance module
@@ -135,6 +136,7 @@ func TestDelegationWithASingleAsset(t *testing.T) {
 	require.Equal(t, types.AllianceAsset{
 		Denom:                AllianceDenom,
 		RewardWeight:         sdk.NewDec(2),
+		ConsensusWeight:      sdk.NewDec(1),
 		RewardWeightRange:    types.RewardWeightRange{Min: sdk.NewDec(0), Max: sdk.NewDec(5)},
 		TakeRate:             sdk.NewDec(0),
 		TotalTokens:          sdk.NewInt(2000_000),
@@ -163,8 +165,8 @@ func TestDelegationWithMultipleAssets(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 	delegations := app.StakingKeeper.GetAllDelegations(ctx)
@@ -199,7 +201,7 @@ func TestDelegationWithMultipleAssets(t *testing.T) {
 	// Manually trigger rebalancing
 	app.AllianceKeeper.GetAssetByDenom(ctx, AllianceDenomTwo)
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 
 	// Check delegation in staking module
@@ -227,8 +229,8 @@ func TestDelegationWithUnknownAssets(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 	delegations := app.StakingKeeper.GetAllDelegations(ctx)
@@ -255,8 +257,8 @@ func TestSuccessfulRedelegation(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 
@@ -299,7 +301,7 @@ func TestSuccessfulRedelegation(t *testing.T) {
 	require.False(t, stop)
 
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 
 	// Check delegation share amount
@@ -354,7 +356,7 @@ func TestSuccessfulRedelegation(t *testing.T) {
 	require.NoError(t, err)
 
 	assets = app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 
 	// Then redelegate to validator1 correctly
@@ -363,7 +365,7 @@ func TestSuccessfulRedelegation(t *testing.T) {
 	require.NoError(t, err)
 
 	assets = app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 
 	// Immediately calling complete re-delegation should do nothing
@@ -391,8 +393,8 @@ func TestRedelegationFailsWithNoDelegations(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 
@@ -432,8 +434,8 @@ func TestRedelegationFailsWithTransitiveDelegation(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 
@@ -472,7 +474,7 @@ func TestRedelegationFailsWithTransitiveDelegation(t *testing.T) {
 	require.NoError(t, err)
 
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 
 	// Should fail when re-delegating back to validator1
@@ -486,8 +488,8 @@ func TestRedelegationFailsWithGreaterAmount(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 
@@ -526,7 +528,7 @@ func TestRedelegationFailsWithGreaterAmount(t *testing.T) {
 	require.NoError(t, err)
 
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 
 	// Then redelegate to validator1 with more than what was delegated but fails
@@ -540,8 +542,8 @@ func TestSuccessfulUndelegation(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 	delegations := app.StakingKeeper.GetAllDelegations(ctx)
@@ -567,7 +569,7 @@ func TestSuccessfulUndelegation(t *testing.T) {
 	require.NoError(t, err)
 
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 
 	// Check total bonded amount
@@ -612,7 +614,7 @@ func TestSuccessfulUndelegation(t *testing.T) {
 	}}, queuedUndelegations)
 
 	assets = app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 
 	// Check total bonded amount
@@ -655,8 +657,8 @@ func TestUndelegationWithoutDelegation(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 	delegations := app.StakingKeeper.GetAllDelegations(ctx)
@@ -689,8 +691,8 @@ func TestUndelegateAfterClaimingTakeRate(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: params,
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(2), sdk.NewDec(12), sdk.MustNewDecFromStr("0.5"), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.MustNewDecFromStr("0.5"), ctx.BlockTime()),
 		},
 	})
 	queryServer := keeper.NewQueryServerImpl(app.AllianceKeeper)
@@ -750,7 +752,7 @@ func TestUndelegateAfterClaimingTakeRate(t *testing.T) {
 	require.NoError(t, err)
 
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 	// Check total bonded amount
 	require.Equal(t, sdk.NewInt(11_000_000), app.StakingKeeper.TotalBondedTokens(ctx))
@@ -764,7 +766,6 @@ func TestUndelegateAfterClaimingTakeRate(t *testing.T) {
 		DelegatorAddr: user1.String(),
 		ValidatorAddr: val1.GetOperator().String(),
 		Denom:         AllianceDenomTwo,
-		Pagination:    nil,
 	})
 	require.NoError(t, err)
 	del := res.GetDelegation()
@@ -799,7 +800,6 @@ func TestUndelegateAfterClaimingTakeRate(t *testing.T) {
 		DelegatorAddr: user1.String(),
 		ValidatorAddr: val1.GetOperator().String(),
 		Denom:         AllianceDenomTwo,
-		Pagination:    nil,
 	})
 	require.NoError(t, err)
 	del = res.GetDelegation()
@@ -817,7 +817,6 @@ func TestUndelegateAfterClaimingTakeRate(t *testing.T) {
 		DelegatorAddr: user1.String(),
 		ValidatorAddr: val1.GetOperator().String(),
 		Denom:         AllianceDenomTwo,
-		Pagination:    nil,
 	})
 	require.NoError(t, err)
 	del = res.GetDelegation()
@@ -831,8 +830,8 @@ func TestDelegationWithNativeStakingChanges(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(2), sdk.NewDec(12), sdk.MustNewDecFromStr("0.5"), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.MustNewDecFromStr("0.5"), ctx.BlockTime()),
 		},
 	})
 
@@ -892,7 +891,7 @@ func TestDelegationWithNativeStakingChanges(t *testing.T) {
 	_, err = app.AllianceKeeper.Delegate(ctx, user2, val2, sdk.NewCoin(AllianceDenomTwo, sdk.NewInt(2000_000)))
 	require.NoError(t, err)
 	assets := app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 
 	// Check total bonded tokens
@@ -905,7 +904,7 @@ func TestDelegationWithNativeStakingChanges(t *testing.T) {
 	require.Equal(t, sdk.NewInt(15_000_000), app.StakingKeeper.TotalBondedTokens(ctx))
 
 	assets = app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 	// Check total bonded tokens
 	require.Equal(t, sdk.NewInt(39_000_000), app.StakingKeeper.TotalBondedTokens(ctx))
@@ -915,7 +914,7 @@ func TestDelegationWithNativeStakingChanges(t *testing.T) {
 	require.NoError(t, err)
 
 	assets = app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 	// Check total bonded tokens
 	require.Equal(t, sdk.NewInt(39_000_000), app.StakingKeeper.TotalBondedTokens(ctx))
@@ -926,7 +925,7 @@ func TestDelegationWithNativeStakingChanges(t *testing.T) {
 	require.NoError(t, err)
 
 	assets = app.AllianceKeeper.GetAllAssets(ctx)
-	err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
+	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
 	require.NoError(t, err)
 	// Check total bonded tokens
 	require.Equal(t, sdk.NewInt(26_000_000), app.StakingKeeper.TotalBondedTokens(ctx))

@@ -10,8 +10,8 @@ import (
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	"github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 
-	"github.com/terra-money/alliance/app"
-	"github.com/terra-money/alliance/cmd/allianced/cmd"
+	"github.com/noria-net/alliance/app"
+	"github.com/noria-net/alliance/cmd/allianced/cmd"
 )
 
 func TestInitCmd(t *testing.T) {

@@ -1,23 +1,21 @@
 package types
 
+import (
+	"github.com/noria-net/alliance/x/alliance/types"
+)
+
 type AllianceQuery struct {
-	Alliance          *Alliance          `json:"alliance"`
-	Delegation        *Delegation        `json:"delegation"`
-	DelegationRewards *DelegationRewards `json:"delegation_rewards"`
+	Alliance *AllianceSubQuery `json:"alliance,omitempty"`
 }
 
-type Alliance struct {
-	Denom string `json:"denom"`
-}
-
-type Delegation struct {
-	Denom     string `json:"denom"`
-	Delegator string `json:"delegator"`
-	Validator string `json:"validator"`
-}
-
-type DelegationRewards struct {
-	Denom     string `json:"denom"`
-	Delegator string `json:"delegator"`
-	Validator string `json:"validator"`
+type AllianceSubQuery struct {
+	Alliance                       *types.QueryAllianceRequest                       `json:"alliance"`
+	Alliances                      *types.QueryAlliancesRequest                      `json:"alliances"`
+	AlliancesDelegations           *types.QueryAllAlliancesDelegationsRequest        `json:"alliances_delegations"`
+	AlliancesDelegationByValidator *types.QueryAlliancesDelegationByValidatorRequest `json:"alliances_delegation_by_validator"`
+	Delegation                     *types.QueryAllianceDelegationRequest             `json:"delegation"`
+	DelegationRewards              *types.QueryAllianceDelegationRewardsRequest      `json:"delegation_rewards"`
+	Params                         *types.QueryParamsRequest                         `json:"params"`
+	Validator                      *types.QueryAllianceValidatorRequest              `json:"validator"`
+	Validators                     *types.QueryAllAllianceValidatorsRequest          `json:"validators"`
 }

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/terra-money/alliance/x/alliance/types"
+	"github.com/noria-net/alliance/x/alliance/types"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -270,7 +270,6 @@ func (k QueryServer) IBCAllianceDelegationRewards(context context.Context, reque
 		DelegatorAddr: request.DelegatorAddr,
 		ValidatorAddr: request.ValidatorAddr,
 		Denom:         "ibc/" + request.Hash,
-		Pagination:    request.Pagination,
 	}
 
 	return k.AllianceDelegationRewards(context, &req)
@@ -452,7 +451,6 @@ func (k QueryServer) IBCAllianceDelegation(c context.Context, request *types.Que
 		DelegatorAddr: request.DelegatorAddr,
 		ValidatorAddr: request.ValidatorAddr,
 		Denom:         "ibc/" + request.Hash,
-		Pagination:    request.Pagination,
 	}
 	return k.AllianceDelegation(c, &req)
 }

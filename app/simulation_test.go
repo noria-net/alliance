@@ -15,7 +15,7 @@ import (
 	simcli "github.com/cosmos/cosmos-sdk/x/simulation/client/cli"
 	"github.com/stretchr/testify/require"
 
-	"github.com/terra-money/alliance/app"
+	"github.com/noria-net/alliance/app"
 )
 
 // SimAppChainID hardcoded chainID for simulation

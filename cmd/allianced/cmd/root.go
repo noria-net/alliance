@@ -25,7 +25,7 @@ import (
 	serverconfig "github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 
-	"github.com/terra-money/alliance/app"
+	"github.com/noria-net/alliance/app"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
@@ -36,7 +36,7 @@ import (
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 
-	"github.com/terra-money/alliance/app/params"
+	"github.com/noria-net/alliance/app/params"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the
