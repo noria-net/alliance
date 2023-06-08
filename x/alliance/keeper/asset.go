@@ -82,6 +82,7 @@ func (k Keeper) UpdateAllianceAsset(ctx sdk.Context, newAsset types.AllianceAsse
 	asset.TakeRate = newAsset.TakeRate
 	asset.RewardWeight = newAsset.RewardWeight
 	asset.ConsensusWeight = newAsset.ConsensusWeight
+	asset.ConsensusCap = newAsset.ConsensusCap
 	asset.RewardChangeRate = newAsset.RewardChangeRate
 	asset.RewardChangeInterval = newAsset.RewardChangeInterval
 	asset.LastRewardChangeTime = newAsset.LastRewardChangeTime
@@ -141,6 +142,8 @@ func (k Keeper) RebalanceBondTokenWeights(ctx sdk.Context, assets []*types.Allia
 
 		expectedBondAmount := sdk.ZeroDec()
 		nativeBondAmountForValidator := sdk.NewDec(validator.Validator.Tokens.Int64()).Sub(currentBondedAmount)
+
+		// initial expectedPower is the native power of the validator in the native staking token before alliance assets
 		expectedPower := (nativeBondAmountForValidator.Quo(powerReduction))
 		for _, asset := range assets {
 			// Ignores assets that were recently added to prevent a small set of stakers from owning too much of the
@@ -157,16 +160,13 @@ func (k Keeper) RebalanceBondTokenWeights(ctx sdk.Context, assets []*types.Allia
 			if valShares.IsPositive() && bondedValidatorShares.IsPositive() {
 				expectedBondAmount = expectedBondAmount.Add(valShares.Quo(bondedValidatorShares).Mul(expectedBondAmountForAsset))
 			}
+
 			/*
-
-				TODO:
-				Add a new property on alliance asset: ConsensusCap
-				Use that property to cap the voting power of an asset
-				i.e.:
-				newValPowerForAsset = min(newValPowerForAsset, asset.ConsensusCap)
-
+				Consensus impact on voting power cannot be higher than the consensus cap.
 			*/
 			newValPowerForAsset := bondedValidatorShares.Mul(asset.ConsensusWeight).Quo(powerReduction)
+			newValPowerCapForAsset := nativeBondAmountForValidator.Mul(asset.ConsensusCap).Quo(powerReduction)
+			newValPowerForAsset = sdk.MinDec(newValPowerForAsset, newValPowerCapForAsset)
 			expectedPower = expectedPower.Add(newValPowerForAsset)
 		}
 		newVotingPower := expectedPower.TruncateInt64()

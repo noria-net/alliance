@@ -157,6 +157,7 @@ key: denom value: AllianceAsset
 | `reward_weight_range` | [RewardWeightRange](#alliance.RewardWeightRange) |  | set a bound of weight range to limit how much reward weights can scale. |
 | `is_initialized` | [bool](#bool) |  | flag to check if an asset has completed the initialization process after the reward delay |
 | `consensus_weight` | [string](#string) |  |  |
+| `consensus_cap` | [string](#string) |  |  |
 
 
 
@@ -538,6 +539,7 @@ GenesisState defines the module's genesis state.
 | `reward_change_interval` | [google.protobuf.Duration](#google.protobuf.Duration) |  |  |
 | `reward_weight_range` | [RewardWeightRange](#alliance.RewardWeightRange) |  | set a bound of weight range to limit how much reward weights can scale. |
 | `consensus_weight` | [string](#string) |  |  |
+| `consensus_cap` | [string](#string) |  |  |
 
 
 
@@ -577,6 +579,7 @@ GenesisState defines the module's genesis state.
 | `reward_change_rate` | [string](#string) |  |  |
 | `reward_change_interval` | [google.protobuf.Duration](#google.protobuf.Duration) |  |  |
 | `consensus_weight` | [string](#string) |  |  |
+| `consensus_cap` | [string](#string) |  |  |
 
 
 

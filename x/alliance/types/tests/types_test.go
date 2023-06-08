@@ -55,18 +55,18 @@ func TestProposalsContent(t *testing.T) {
 		str   string
 	}{
 		"msg_create_alliance_proposal": {
-			p:     types.NewMsgCreateAllianceProposal("Alliance1", "Alliance with 1", "ibc/denom1", sdk.NewDec(1), types.RewardWeightRange{Min: sdk.NewDec(0), Max: sdk.NewDec(5)}, sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(1), time.Second),
+			p:     types.NewMsgCreateAllianceProposal("Alliance1", "Alliance with 1", "ibc/denom1", sdk.NewDec(1), types.RewardWeightRange{Min: sdk.NewDec(0), Max: sdk.NewDec(5)}, sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(1), time.Second),
 			title: "Alliance1",
 			desc:  "Alliance with 1",
 			typ:   "msg_create_alliance_proposal",
-			str:   "title:\"Alliance1\" description:\"Alliance with 1\" denom:\"ibc/denom1\" reward_weight:\"1000000000000000000\" take_rate:\"1000000000000000000\" reward_change_rate:\"1000000000000000000\" reward_change_interval:<seconds:1 > reward_weight_range:<min:\"0\" max:\"5000000000000000000\" > ",
+			str:   "title:\"Alliance1\" description:\"Alliance with 1\" denom:\"ibc/denom1\" reward_weight:\"1000000000000000000\" take_rate:\"1000000000000000000\" reward_change_rate:\"1000000000000000000\" reward_change_interval:<seconds:1 > reward_weight_range:<min:\"0\" max:\"5000000000000000000\" > consensus_weight:\"1000000000000000000\" consensus_cap:\"1000000000000000000\" ",
 		},
 		"msg_update_alliance_proposal": {
-			p:     types.NewMsgUpdateAllianceProposal("Alliance2", "Alliance with 2", "ibc/denom2", sdk.NewDec(2), sdk.NewDec(2), sdk.NewDec(2), sdk.NewDec(2), time.Hour),
+			p:     types.NewMsgUpdateAllianceProposal("Alliance2", "Alliance with 2", "ibc/denom2", sdk.NewDec(2), sdk.NewDec(2), sdk.NewDec(2), sdk.NewDec(2), sdk.NewDec(2), time.Hour),
 			title: "Alliance2",
 			desc:  "Alliance with 2",
 			typ:   "msg_update_alliance_proposal",
-			str:   "title:\"Alliance2\" description:\"Alliance with 2\" denom:\"ibc/denom2\" reward_weight:\"2000000000000000000\" take_rate:\"2000000000000000000\" reward_change_rate:\"2000000000000000000\" reward_change_interval:<seconds:3600 > ",
+			str:   "title:\"Alliance2\" description:\"Alliance with 2\" denom:\"ibc/denom2\" reward_weight:\"2000000000000000000\" take_rate:\"2000000000000000000\" reward_change_rate:\"2000000000000000000\" reward_change_interval:<seconds:3600 > consensus_weight:\"2000000000000000000\" consensus_cap:\"2000000000000000000\" ",
 		},
 		"msg_delete_alliance_proposal": {
 			p:     types.NewMsgDeleteAllianceProposal("test", "abcd", "ibc/denom"),
@@ -118,19 +118,19 @@ func TestInvalidProposalsContent(t *testing.T) {
 		str   string
 	}{
 		"msg_create_alliance_proposal": {
-			p:     types.NewMsgCreateAllianceProposal("Alliance1", "Alliance with 1", "ibc/denom1", sdk.NewDec(1), types.RewardWeightRange{Min: sdk.NewDec(0), Max: sdk.NewDec(5)}, sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(1), -time.Second),
+			p:     types.NewMsgCreateAllianceProposal("Alliance1", "Alliance with 1", "ibc/denom1", sdk.NewDec(1), types.RewardWeightRange{Min: sdk.NewDec(0), Max: sdk.NewDec(5)}, sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(1), -time.Second),
 			title: "Alliance1",
 			desc:  "Alliance with 1",
 			typ:   "msg_create_alliance_proposal",
 		},
 		"msg_create_alliance_proposal_invalid_denom": {
-			p:     types.NewMsgCreateAllianceProposal("Alliance1", "Alliance with 1", invalidDenom, sdk.NewDec(1), types.RewardWeightRange{Min: sdk.NewDec(0), Max: sdk.NewDec(5)}, sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(1), time.Second),
+			p:     types.NewMsgCreateAllianceProposal("Alliance1", "Alliance with 1", invalidDenom, sdk.NewDec(1), types.RewardWeightRange{Min: sdk.NewDec(0), Max: sdk.NewDec(5)}, sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(1), time.Second),
 			title: "Alliance1",
 			desc:  "Alliance with 1",
 			typ:   "msg_create_alliance_proposal",
 		},
 		"msg_update_alliance_proposal": {
-			p:     types.NewMsgUpdateAllianceProposal("Alliance2", "Alliance with 2", "ibc/denom2", sdk.NewDec(2), sdk.NewDec(2), sdk.NewDec(2), sdk.NewDec(2), -time.Hour),
+			p:     types.NewMsgUpdateAllianceProposal("Alliance2", "Alliance with 2", "ibc/denom2", sdk.NewDec(2), sdk.NewDec(2), sdk.NewDec(2), sdk.NewDec(2), sdk.NewDec(2), -time.Hour),
 			title: "Alliance2",
 			desc:  "Alliance with 2",
 			typ:   "msg_update_alliance_proposal",

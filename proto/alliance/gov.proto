@@ -50,6 +50,11 @@ message MsgCreateAllianceProposal {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable)   = false
     ];
+
+    string consensus_cap = 10 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable)   = false
+    ];
 }
   
 message MsgUpdateAllianceProposal {
@@ -86,6 +91,11 @@ message MsgUpdateAllianceProposal {
     ];
 
     string consensus_weight = 8 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable)   = false
+    ];
+
+    string consensus_cap = 9 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable)   = false
     ];

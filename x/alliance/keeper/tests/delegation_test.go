@@ -28,8 +28,8 @@ func TestDelegationWithASingleAsset(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), genesisTime),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), genesisTime),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), genesisTime),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), genesisTime),
 		},
 	})
 	delegations := app.StakingKeeper.GetAllDelegations(ctx)
@@ -165,8 +165,8 @@ func TestDelegationWithMultipleAssets(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 	delegations := app.StakingKeeper.GetAllDelegations(ctx)
@@ -229,8 +229,8 @@ func TestDelegationWithUnknownAssets(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 	delegations := app.StakingKeeper.GetAllDelegations(ctx)
@@ -257,8 +257,8 @@ func TestSuccessfulRedelegation(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 
@@ -393,8 +393,8 @@ func TestRedelegationFailsWithNoDelegations(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 
@@ -434,8 +434,8 @@ func TestRedelegationFailsWithTransitiveDelegation(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 
@@ -488,8 +488,8 @@ func TestRedelegationFailsWithGreaterAmount(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 
@@ -542,8 +542,8 @@ func TestSuccessfulUndelegation(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 	delegations := app.StakingKeeper.GetAllDelegations(ctx)
@@ -657,8 +657,8 @@ func TestUndelegationWithoutDelegation(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 	delegations := app.StakingKeeper.GetAllDelegations(ctx)
@@ -691,8 +691,8 @@ func TestUndelegateAfterClaimingTakeRate(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: params,
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.MustNewDecFromStr("0.5"), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.MustNewDecFromStr("0.5"), ctx.BlockTime()),
 		},
 	})
 	queryServer := keeper.NewQueryServerImpl(app.AllianceKeeper)
@@ -830,8 +830,8 @@ func TestDelegationWithNativeStakingChanges(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.MustNewDecFromStr("0.5"), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.MustNewDecFromStr("0.5"), ctx.BlockTime()),
 		},
 	})
 

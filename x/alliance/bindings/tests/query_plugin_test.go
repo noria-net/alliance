@@ -24,7 +24,7 @@ func createTestContext(t *testing.T) (*app.App, sdk.Context, time.Time) {
 	app := app.Setup(t)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 	genesisTime := ctx.BlockTime()
-	newAsset := types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), genesisTime)
+	newAsset := types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.MustNewDecFromStr("0.1"), sdk.ZeroDec(), sdk.NewDec(5), sdk.NewDec(0), genesisTime)
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{newAsset},
@@ -93,6 +93,7 @@ func TestAssetQuery(t *testing.T) {
 			Denom:                AllianceDenom,
 			RewardWeight:         sdk.NewDec(2),
 			ConsensusWeight:      sdk.NewDec(1),
+			ConsensusCap:         sdk.MustNewDecFromStr("0.1"),
 			TakeRate:             sdk.NewDec(0),
 			TotalTokens:          math.NewInt(0),
 			TotalValidatorShares: sdk.NewDec(0),
@@ -268,6 +269,7 @@ func TestAllAlliancesQuery(t *testing.T) {
 				Denom:                AllianceDenom,
 				RewardWeight:         sdk.NewDec(2),
 				ConsensusWeight:      sdk.NewDec(1),
+				ConsensusCap:         sdk.NewDec(1),
 				TakeRate:             sdk.NewDec(0),
 				TotalTokens:          math.NewInt(0),
 				TotalValidatorShares: sdk.NewDec(0),

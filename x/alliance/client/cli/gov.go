@@ -15,8 +15,8 @@ import (
 
 func CreateAlliance() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-alliance denom reward-weight reward-weight-min reward-weight-max consensus-weight take-rate reward-change-rate reward-change-interval",
-		Args:  cobra.ExactArgs(8),
+		Use:   "create-alliance denom reward-weight reward-weight-min reward-weight-max consensus-weight consensus-cap take-rate reward-change-rate reward-change-interval",
+		Args:  cobra.ExactArgs(9),
 		Short: "Create an alliance with the specified parameters",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -55,17 +55,22 @@ func CreateAlliance() *cobra.Command {
 				return err
 			}
 
-			takeRate, err := sdk.NewDecFromStr(args[5])
+			consensusCap, err := sdk.NewDecFromStr(args[5])
 			if err != nil {
 				return err
 			}
 
-			rewardChangeRate, err := sdk.NewDecFromStr(args[6])
+			takeRate, err := sdk.NewDecFromStr(args[6])
 			if err != nil {
 				return err
 			}
 
-			rewardChangeInterval, err := time.ParseDuration(args[7])
+			rewardChangeRate, err := sdk.NewDecFromStr(args[7])
+			if err != nil {
+				return err
+			}
+
+			rewardChangeInterval, err := time.ParseDuration(args[8])
 			if err != nil {
 				return err
 			}
@@ -92,6 +97,7 @@ func CreateAlliance() *cobra.Command {
 					Max: rewardWeightMax,
 				},
 				consensusWeight,
+				consensusCap,
 				takeRate,
 				rewardChangeRate,
 				rewardChangeInterval,
@@ -154,17 +160,22 @@ func UpdateAlliance() *cobra.Command {
 				return err
 			}
 
-			takeRate, err := sdk.NewDecFromStr(args[3])
+			consensusCap, err := sdk.NewDecFromStr(args[3])
 			if err != nil {
 				return err
 			}
 
-			rewardChangeRate, err := sdk.NewDecFromStr(args[4])
+			takeRate, err := sdk.NewDecFromStr(args[4])
 			if err != nil {
 				return err
 			}
 
-			rewardChangeInterval, err := time.ParseDuration(args[5])
+			rewardChangeRate, err := sdk.NewDecFromStr(args[5])
+			if err != nil {
+				return err
+			}
+
+			rewardChangeInterval, err := time.ParseDuration(args[6])
 			if err != nil {
 				return err
 			}
@@ -187,6 +198,7 @@ func UpdateAlliance() *cobra.Command {
 				denom,
 				rewardWeight,
 				consensusWeight,
+				consensusCap,
 				takeRate,
 				rewardChangeRate,
 				rewardChangeInterval,
