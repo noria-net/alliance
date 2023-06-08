@@ -129,8 +129,8 @@ func TestClaimRewards(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(0), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(0), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 
@@ -258,8 +258,8 @@ func TestClaimRewardsBeforeRewardsIssuance(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(0), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime().Add(-time.Hour)),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime().Add(time.Hour)),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(0), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime().Add(-time.Hour)),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime().Add(time.Hour)),
 		},
 	})
 	queryServer := keeper.NewQueryServerImpl(app.AllianceKeeper)
@@ -368,8 +368,8 @@ func TestClaimRewardsWithMultipleValidators(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(0), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(0), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 
@@ -492,8 +492,8 @@ func TestClaimRewardsAfterRewardsRatesChange(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(0), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(0), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 
@@ -588,7 +588,7 @@ func TestClaimRewardsAfterRewardsRatesChange(t *testing.T) {
 		},
 	})
 
-	err = app.AllianceKeeper.UpdateAllianceAsset(ctx, types.NewAllianceAsset(AllianceDenom, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()))
+	err = app.AllianceKeeper.UpdateAllianceAsset(ctx, types.NewAllianceAsset(AllianceDenom, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()))
 	require.NoError(t, err)
 	assets = app.AllianceKeeper.GetAllAssets(ctx)
 	_, err = app.AllianceKeeper.RebalanceBondTokenWeights(ctx, assets)
@@ -790,8 +790,8 @@ func TestClaimRewardsAfterRebalancing(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(0), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(0), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 
@@ -909,8 +909,8 @@ func TestRewardWeightWithZeroTokens(t *testing.T) {
 	app.AllianceKeeper.InitGenesis(ctx, &types.GenesisState{
 		Params: types.DefaultParams(),
 		Assets: []types.AllianceAsset{
-			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(0), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
-			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenom, sdk.NewDec(2), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(0), sdk.NewDec(5), sdk.NewDec(0), ctx.BlockTime()),
+			types.NewAllianceAsset(AllianceDenomTwo, sdk.NewDec(10), sdk.NewDec(1), sdk.NewDec(1), sdk.NewDec(2), sdk.NewDec(12), sdk.NewDec(0), ctx.BlockTime()),
 		},
 	})
 

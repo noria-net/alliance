@@ -27,7 +27,7 @@ func init() {
 	govtypes.RegisterProposalType(ProposalTypeDeleteAlliance)
 }
 
-func NewMsgCreateAllianceProposal(title, description, denom string, rewardWeight sdk.Dec, rewardWeightRange RewardWeightRange, consensusWeight sdk.Dec, takeRate sdk.Dec, rewardChangeRate sdk.Dec, rewardChangeInterval time.Duration) govtypes.Content {
+func NewMsgCreateAllianceProposal(title, description, denom string, rewardWeight sdk.Dec, rewardWeightRange RewardWeightRange, consensusWeight sdk.Dec, consensusCap sdk.Dec, takeRate sdk.Dec, rewardChangeRate sdk.Dec, rewardChangeInterval time.Duration) govtypes.Content {
 	return &MsgCreateAllianceProposal{
 		Title:                title,
 		Description:          description,
@@ -35,6 +35,7 @@ func NewMsgCreateAllianceProposal(title, description, denom string, rewardWeight
 		RewardWeight:         rewardWeight,
 		RewardWeightRange:    rewardWeightRange,
 		ConsensusWeight:      consensusWeight,
+		ConsensusCap:         consensusCap,
 		TakeRate:             takeRate,
 		RewardChangeRate:     rewardChangeRate,
 		RewardChangeInterval: rewardChangeInterval,
@@ -60,6 +61,10 @@ func (m *MsgCreateAllianceProposal) ValidateBasic() error {
 
 	if m.ConsensusWeight.IsNil() || m.ConsensusWeight.LT(sdk.ZeroDec()) {
 		return status.Errorf(codes.InvalidArgument, "Alliance consensusWeight must be zero or a positive number")
+	}
+
+	if m.ConsensusCap.IsNil() || m.ConsensusCap.LT(sdk.ZeroDec()) {
+		return status.Errorf(codes.InvalidArgument, "Alliance consensusCap must be zero or a positive number")
 	}
 
 	if m.RewardWeightRange.Min.IsNil() || m.RewardWeightRange.Min.LT(sdk.ZeroDec()) ||
@@ -90,13 +95,14 @@ func (m *MsgCreateAllianceProposal) ValidateBasic() error {
 	return nil
 }
 
-func NewMsgUpdateAllianceProposal(title, description, denom string, rewardWeight, consensusWeight, takeRate sdk.Dec, rewardChangeRate sdk.Dec, rewardChangeInterval time.Duration) govtypes.Content {
+func NewMsgUpdateAllianceProposal(title, description, denom string, rewardWeight, consensusWeight, consensusCap, takeRate sdk.Dec, rewardChangeRate sdk.Dec, rewardChangeInterval time.Duration) govtypes.Content {
 	return &MsgUpdateAllianceProposal{
 		Title:                title,
 		Description:          description,
 		Denom:                denom,
 		RewardWeight:         rewardWeight,
 		ConsensusWeight:      consensusWeight,
+		ConsensusCap:         consensusCap,
 		TakeRate:             takeRate,
 		RewardChangeRate:     rewardChangeRate,
 		RewardChangeInterval: rewardChangeInterval,

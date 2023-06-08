@@ -4,6 +4,7 @@ type AllianceResponse struct {
 	Denom                string            `json:"denom"`
 	RewardWeight         string            `json:"reward_weight"`
 	ConsensusWeight      string            `json:"consensus_weight"`
+	ConsensusCap         string            `json:"consensus_cap"`
 	TakeRate             string            `json:"take_rate"`
 	TotalTokens          string            `json:"total_tokens"`
 	TotalValidatorShares string            `json:"total_validator_shares"`

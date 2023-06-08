@@ -41,9 +41,10 @@ func RandomizedGenesisState(simState *module.SimulationState) {
 	for i := 0; i < numOfAllianceAssets; i++ {
 		rewardRate := simulation.RandomDecAmount(r, sdk.NewDec(5))
 		consensusRate := simulation.RandomDecAmount(r, sdk.NewDec(3))
+		consensusCap := simulation.RandomDecAmount(r, sdk.NewDec(3))
 		takeRate := simulation.RandomDecAmount(r, sdk.MustNewDecFromStr("0.0005"))
 		startTime := time.Now().Add(time.Duration(simulation.RandIntBetween(r, 60, 60*60*24*3*2)) * time.Second)
-		allianceAssets = append(allianceAssets, types.NewAllianceAsset(fmt.Sprintf("ASSET%d", i), rewardRate, consensusRate, sdk.NewDec(0), sdk.NewDec(15), takeRate, startTime))
+		allianceAssets = append(allianceAssets, types.NewAllianceAsset(fmt.Sprintf("ASSET%d", i), rewardRate, consensusRate, consensusCap, sdk.NewDec(0), sdk.NewDec(15), takeRate, startTime))
 	}
 
 	allianceGenesis := types.GenesisState{
