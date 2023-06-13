@@ -24,6 +24,9 @@ message Params {
     (gogoproto.nullable) = false,
     (gogoproto.stdtime) = true
   ];
+
+  // Account address to send slashed coins to
+  string slash_receiver = 4; 
 }
 
 message RewardHistory {

@@ -99,6 +99,7 @@
 | `reward_delay_time` | [google.protobuf.Duration](#google.protobuf.Duration) |  |  |
 | `take_rate_claim_interval` | [google.protobuf.Duration](#google.protobuf.Duration) |  | Time interval between consecutive applications of `take_rate` |
 | `last_take_rate_claim_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | Last application of `take_rate` on assets |
+| `slash_receiver` | [string](#string) |  | Account address to send slashed coins to |
 
 
 

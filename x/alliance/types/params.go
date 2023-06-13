@@ -6,6 +6,7 @@ import (
 
 	"golang.org/x/exp/slices"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
@@ -13,6 +14,7 @@ var (
 	RewardDelayTime       = []byte("RewardDelayTime")
 	TakeRateClaimInterval = []byte("TakeRateClaimInterval")
 	LastTakeRateClaimTime = []byte("LastTakeRateClaimTime")
+	SlashReceiver         = []byte("SlashReceiver")
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)
@@ -22,7 +24,23 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(RewardDelayTime, &p.RewardDelayTime, validatePositiveDuration),
 		paramtypes.NewParamSetPair(TakeRateClaimInterval, &p.TakeRateClaimInterval, validatePositiveDuration),
 		paramtypes.NewParamSetPair(LastTakeRateClaimTime, &p.LastTakeRateClaimTime, validateTime),
+		paramtypes.NewParamSetPair(SlashReceiver, &p.SlashReceiver, validateAccountAddress),
 	}
+}
+
+func validateAccountAddress(i interface{}) error {
+	v, ok := i.(string)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+	if len(v) > 0 {
+		_, err := sdk.AccAddressFromBech32(v)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func validatePositiveDuration(i interface{}) error {
@@ -50,6 +68,7 @@ func NewParams() Params {
 		RewardDelayTime:       time.Hour * 24 * 7,
 		TakeRateClaimInterval: time.Minute * 5,
 		LastTakeRateClaimTime: time.Time{},
+		SlashReceiver:         "",
 	}
 }
 
