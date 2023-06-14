@@ -52,7 +52,12 @@ func (h Hooks) AfterDelegationModified(ctx sdk.Context, _ sdk.AccAddress, _ sdk.
 }
 
 func (h Hooks) BeforeValidatorSlashed(ctx sdk.Context, valAddr sdk.ValAddress, fraction sdk.Dec) error {
-	err := h.k.SlashValidator(ctx, valAddr, fraction)
+	err := h.k.MintAndRedirectSlashedNativeCoins(ctx, valAddr, fraction)
+	if err != nil {
+		return err
+	}
+
+	err = h.k.SlashValidator(ctx, valAddr, fraction)
 	if err != nil {
 		return err
 	}

@@ -104,7 +104,7 @@ func (k Keeper) RebalanceHook(ctx sdk.Context, assets []*types.AllianceAsset) ([
 // the difference.
 func (k Keeper) RebalanceBondTokenWeights(ctx sdk.Context, assets []*types.AllianceAsset) (updates []abci.ValidatorUpdate, err error) {
 	updates = []abci.ValidatorUpdate{}
-	powerReduction := sdk.NewDec(k.stakingKeeper.PowerReduction(ctx).Int64())
+	powerReduction := sdk.NewDecFromInt(k.stakingKeeper.PowerReduction(ctx))
 	moduleAddr := k.accountKeeper.GetModuleAddress(types.ModuleName)
 	allianceBondAmount := k.GetAllianceBondedAmount(ctx, moduleAddr)
 

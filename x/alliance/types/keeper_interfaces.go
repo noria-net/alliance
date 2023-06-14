@@ -45,6 +45,8 @@ type StakingKeeper interface {
 	DequeueAllMatureRedelegationQueue(ctx sdk.Context, currTime time.Time) (matureRedelegations []types.DVVTriplet)
 	CompleteRedelegation(ctx sdk.Context, delAddr sdk.AccAddress, valSrcAddr, valDstAddr sdk.ValAddress) (sdk.Coins, error)
 	PowerReduction(ctx sdk.Context) math.Int
+	TokensFromConsensusPower(ctx sdk.Context, power int64) math.Int
+	TokensToConsensusPower(ctx sdk.Context, tokens math.Int) int64
 }
 
 type BankKeeper interface {
